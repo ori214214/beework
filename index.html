@@ -1,0 +1,3288 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WorkBee - עבודות זמניות בסביבתך</title>
+    <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-main: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --primary: #6366f1;
+            --primary-hover: #4f46e5;
+            --accent-green: #10b981;
+            --border-color: #e2e8f0;
+            --star-color: #f59e0b;
+            --green-badge-bg: #ecfdf5;
+            --green-badge-text: #047857;
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
+            --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.03);
+            --shadow-hover: 0 20px 30px -10px rgba(99, 102, 241, 0.12), 0 10px 15px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Assistant', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            line-height: 1.6;
+        }
+
+        /* Header */
+        header {
+            background-color: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(8px);
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+        }
+
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .logo span {
+            color: var(--text-main);
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 1.8rem;
+        }
+
+        nav a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.05rem;
+            transition: color 0.2s;
+            cursor: pointer;
+        }
+
+        nav a:hover, nav a.active {
+            color: var(--primary);
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 0.8rem;
+            align-items: center;
+        }
+
+        .btn {
+            padding: 0.65rem 1.4rem;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            cursor: pointer;
+            border: none;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-outline:hover {
+            background: #f1f5f9;
+            border-color: #cbd5e1;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.25);
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-hover);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(99, 102, 241, 0.35);
+        }
+
+        .btn-green {
+            background: #10b981;
+            color: white;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
+        }
+
+        .btn-green:hover {
+            background: #059669;
+            transform: translateY(-1px);
+        }
+
+        .profile-icon-btn {
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            background: #f1f5f9;
+            border: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: var(--text-main);
+            transition: all 0.2s ease;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .profile-icon-btn:hover {
+            background: #e2e8f0;
+            border-color: var(--primary);
+            color: var(--primary);
+            transform: scale(1.05);
+        }
+
+        /* Page Views */
+        .view {
+            display: none;
+        }
+        .view.active-view {
+            display: block;
+        }
+
+        /* Hero Section & Search Bar */
+        .hero {
+            background: radial-gradient(circle at top, #eef2ff 0%, #f8fafc 70%);
+            padding: 4.5rem 1.5rem 3.5rem 1.5rem;
+            text-align: center;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 0.8rem;
+            color: var(--text-main);
+            letter-spacing: -0.5px;
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            color: var(--text-muted);
+            margin-bottom: 2rem;
+            max-width: 680px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .hero-top-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1.2rem;
+            margin-bottom: 2.2rem;
+        }
+
+        /* Pill Search Bar Style (Like Image) */
+        .pill-search-bar {
+            max-width: 950px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 50px;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            padding: 0.4rem 0.6rem;
+            position: relative;
+        }
+
+        .search-col {
+            flex: 1;
+            padding: 0.5rem 1.2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            position: relative;
+        }
+
+        .search-col:not(:last-child) {
+            border-left: 1px solid #e2e8f0;
+        }
+
+        .search-col label {
+            font-size: 0.82rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 0.2rem;
+        }
+
+        .search-col select {
+            width: 100%;
+            border: none;
+            background: transparent;
+            outline: none;
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--text-main);
+            cursor: pointer;
+            appearance: none;
+            -webkit-appearance: none;
+            padding-left: 1.2rem;
+        }
+
+        .search-col::after {
+            content: '⌄';
+            position: absolute;
+            left: 1rem;
+            top: 52%;
+            transform: translateY(-50%);
+            font-weight: 800;
+            color: var(--text-main);
+            pointer-events: none;
+        }
+
+        .search-icon-btn {
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 4px 14px rgba(99, 102, 241, 0.4);
+            flex-shrink: 0;
+        }
+
+        .search-icon-btn:hover {
+            background: var(--primary-hover);
+            transform: scale(1.05);
+        }
+
+        /* Categories Nav */
+        .categories-nav {
+            max-width: 1200px;
+            margin: 2rem auto 0 auto;
+            padding: 0 1.5rem;
+            display: flex;
+            gap: 0.8rem;
+            overflow-x: auto;
+            padding-bottom: 0.5rem;
+        }
+
+        .chip {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            padding: 0.65rem 1.3rem;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .chip.active, .chip:hover {
+            background: var(--text-main);
+            color: white;
+            border-color: var(--text-main);
+            transform: translateY(-1px);
+        }
+
+        /* Filter Panel in Jobs View */
+        .filter-panel {
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 1.2rem 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-sm);
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1.2rem;
+            align-items: flex-end;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            text-align: right;
+        }
+
+        .filter-group label {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            margin-bottom: 0.4rem;
+        }
+
+        .filter-group input, .filter-group select {
+            padding: 0.65rem 0.9rem;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            font-size: 0.95rem;
+            outline: none;
+            background: #ffffff;
+            font-weight: 600;
+        }
+
+        .filter-group input:focus, .filter-group select:focus {
+            border-color: var(--primary);
+        }
+
+        /* How it works */
+        .how-it-works-section {
+            background: white;
+            border-top: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
+            padding: 4.5rem 1.5rem;
+            margin: 3.5rem 0;
+            text-align: center;
+        }
+
+        .how-it-works-container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .hw-title {
+            font-size: 2.3rem;
+            font-weight: 800;
+            margin-bottom: 2.8rem;
+            color: var(--text-main);
+        }
+
+        .steps-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+        }
+
+        .step-card {
+            background: var(--bg-main);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 2.2rem 1.8rem;
+            text-align: right;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+        }
+
+        .step-number {
+            background: var(--primary);
+            color: white;
+            width: 38px;
+            height: 38px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 1.1rem;
+            margin-bottom: 1.2rem;
+        }
+
+        .step-card h3 {
+            font-size: 1.3rem;
+            font-weight: 800;
+            margin-bottom: 0.6rem;
+        }
+
+        .step-card p {
+            color: var(--text-muted);
+            font-size: 0.98rem;
+        }
+
+        /* Main Container */
+        .main-container {
+            max-width: 1200px;
+            margin: 2.5rem auto;
+            padding: 0 1.5rem;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.8rem;
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            font-weight: 800;
+        }
+
+        /* Grid & Cards */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 1.8rem;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 1.6rem;
+            box-shadow: var(--shadow);
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+            border-color: #cbd5e1;
+        }
+
+        .card-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 0.9rem;
+        }
+
+        .badge {
+            background: var(--green-badge-bg);
+            color: var(--green-badge-text);
+            padding: 0.35rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.82rem;
+            font-weight: 700;
+        }
+
+        .rating {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            font-weight: 700;
+            font-size: 0.92rem;
+        }
+
+        .rating span.star {
+            color: var(--star-color);
+        }
+
+        .job-title {
+            font-size: 1.3rem;
+            font-weight: 800;
+            margin-bottom: 0.4rem;
+            color: var(--text-main);
+            line-height: 1.35;
+        }
+
+        .employer-info {
+            color: var(--text-muted);
+            font-size: 0.92rem;
+            margin-bottom: 1.1rem;
+        }
+
+        .meta-tags {
+            display: flex;
+            gap: 0.6rem;
+            flex-wrap: wrap;
+            margin-bottom: 1.3rem;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .meta-item {
+            background: #f1f5f9;
+            padding: 0.35rem 0.75rem;
+            border-radius: 8px;
+            font-weight: 600;
+        }
+
+        .card-bottom {
+            border-top: 1px solid var(--border-color);
+            padding-top: 1.1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .pay {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--primary);
+        }
+
+        .pay span {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        /* Page Layouts */
+        .page-container {
+            max-width: 860px;
+            margin: 3.5rem auto;
+            padding: 0 1.5rem;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+
+        .page-header h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+        }
+
+        .page-header p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+
+        .form-card-wizard {
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            padding: 2.8rem;
+            box-shadow: var(--shadow);
+        }
+
+        .form-step-title {
+            font-size: 1.35rem;
+            font-weight: 800;
+            margin-bottom: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            color: var(--text-main);
+            border-bottom: 2px solid #f1f5f9;
+            padding-bottom: 0.6rem;
+        }
+
+        .category-select-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .category-card-option {
+            background: #f8fafc;
+            border: 2px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1.2rem 0.8rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 700;
+            font-size: 0.95rem;
+        }
+
+        .category-card-option .icon {
+            font-size: 1.8rem;
+            display: block;
+            margin-bottom: 0.4rem;
+        }
+
+        .category-card-option:hover, .category-card-option.selected {
+            border-color: var(--primary);
+            background: #eef2ff;
+            color: var(--primary);
+        }
+
+        .form-grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.2rem;
+        }
+
+        .form-group-custom {
+            margin-bottom: 1.5rem;
+            text-align: right;
+        }
+
+        .form-group-custom label {
+            display: block;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        .form-group-custom input, 
+        .form-group-custom select, 
+        .form-group-custom textarea {
+            width: 100%;
+            padding: 0.9rem 1.1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.2s;
+            background: #ffffff;
+        }
+
+        .form-group-custom input:focus, 
+        .form-group-custom select:focus, 
+        .form-group-custom textarea:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.12);
+        }
+
+        .form-group-custom textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .form-actions-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        /* Profile Styles */
+        .profile-header-card {
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            gap: 1.8rem;
+            margin-bottom: 2rem;
+        }
+
+        .profile-avatar-lg {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            background: #eef2ff;
+            border: 2px solid var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            flex-shrink: 0;
+        }
+
+        .profile-info h2 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            margin-bottom: 0.3rem;
+        }
+
+        .profile-info p {
+            color: var(--text-muted);
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .profile-stats {
+            display: flex;
+            gap: 1.5rem;
+            margin-top: 0.8rem;
+        }
+
+        .profile-stat-item {
+            background: #f8fafc;
+            padding: 0.5rem 1rem;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+
+        .profile-section-block {
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+        }
+
+        .profile-section-block h3 {
+            font-size: 1.4rem;
+            font-weight: 800;
+            margin-bottom: 1.2rem;
+            color: var(--text-main);
+            border-bottom: 2px solid #f1f5f9;
+            padding-bottom: 0.5rem;
+        }
+
+        .empty-state-text {
+            color: var(--text-muted);
+            font-weight: 600;
+            font-size: 0.95rem;
+            padding: 1rem 0;
+        }
+
+        /* Footer policy/terms/contact */
+        .policy-section {
+            margin-bottom: 2rem;
+            text-align: right;
+        }
+
+        .policy-section h3 {
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 0.6rem;
+        }
+
+        .policy-section p, .policy-section ul {
+            color: var(--text-main);
+            font-size: 0.98rem;
+            line-height: 1.7;
+        }
+
+        .policy-section ul {
+            padding-right: 1.4rem;
+            margin-top: 0.4rem;
+        }
+
+        .contact-info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.2rem;
+            margin-bottom: 2rem;
+        }
+
+        .contact-card {
+            background: #f8fafc;
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1.4rem;
+            text-align: center;
+        }
+
+        .contact-card .icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Modals */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(15, 23, 42, 0.65);
+            backdrop-filter: blur(6px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            padding: 1.5rem;
+        }
+
+        .modal-overlay.active { display: flex; }
+
+        .modal {
+            background: white;
+            border-radius: 24px;
+            max-width: 500px;
+            width: 100%;
+            padding: 2.5rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            position: relative;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1.2rem; left: 1.2rem;
+            background: #f1f5f9;
+            border: none;
+            width: 36px; height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-weight: 800;
+            color: var(--text-muted);
+        }
+
+        /* Footer */
+        footer {
+            background: white;
+            border-top: 1px solid var(--border-color);
+            padding: 3rem 1.5rem;
+            margin-top: 4rem;
+            text-align: center;
+            color: var(--text-muted);
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-bottom: 1.2rem;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: var(--text-main);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+        }
+
+        .footer-links a:hover {
+            color: var(--primary);
+        }
+
+        @media (max-width: 850px) {
+            nav { display: none; }
+            .header-container { padding: 0.8rem 1rem; }
+            .hero { padding: 3rem 1rem 2.5rem 1rem; }
+            .hero h1 { font-size: 2.2rem; }
+            .hero p { font-size: 1.05rem; }
+            .hero-top-buttons { flex-wrap: wrap; }
+            .hero-top-buttons .btn { flex: 1 1 auto; justify-content: center; }
+            .steps-grid { grid-template-columns: 1fr; }
+            .form-grid-2 { grid-template-columns: 1fr; }
+            .grid { grid-template-columns: 1fr; }
+            .category-select-grid { grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); }
+            .profile-header-card { flex-direction: column; text-align: center; }
+            .profile-stats { justify-content: center; flex-wrap: wrap; }
+            .pill-search-bar { flex-direction: column; border-radius: 20px; padding: 1rem; }
+            .search-col { width: 100%; border-left: none !important; border-bottom: 1px solid #e2e8f0; padding: 0.8rem 0; }
+            .search-icon-btn { width: 100%; border-radius: 14px; margin-top: 0.8rem; }
+            .main-container { padding: 0 1rem; }
+            .page-container { padding: 0 1rem; margin: 2rem auto; }
+            .page-header h1 { font-size: 1.9rem; }
+            .form-card-wizard { padding: 1.5rem; }
+            .filter-panel { padding: 1rem; }
+            .modal-overlay { padding: 0.8rem; }
+            .modal { padding: 1.6rem; border-radius: 20px; }
+            .contact-info-grid { grid-template-columns: 1fr; }
+        }
+
+        @media (max-width: 480px) {
+            .logo { font-size: 1.4rem; }
+            .header-actions { gap: 0.5rem; }
+            .header-actions .btn { padding: 0.55rem 0.9rem; font-size: 0.85rem; }
+            .profile-icon-btn { width: 40px; height: 40px; }
+            .hero h1 { font-size: 1.7rem; }
+            .hero p { font-size: 0.98rem; }
+            .section-title { font-size: 1.4rem; }
+            .section-header { flex-wrap: wrap; gap: 0.6rem; }
+            .page-header h1 { font-size: 1.6rem; }
+            .page-header p { font-size: 0.95rem; }
+            .form-card-wizard { padding: 1.1rem; }
+            .form-step-title { font-size: 1.1rem; }
+        }
+
+        /* ===== Added: terms consent, Bit note, completion/review, chat, report, admin ===== */
+        .terms-consent {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.6rem;
+            text-align: right;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            cursor: pointer;
+            line-height: 1.5;
+        }
+
+        .terms-consent input {
+            width: 18px;
+            height: 18px;
+            margin-top: 0.2rem;
+            accent-color: var(--primary);
+            flex-shrink: 0;
+            cursor: pointer;
+        }
+
+        .terms-consent a {
+            color: var(--primary);
+            text-decoration: underline;
+        }
+
+        .bit-note {
+            background: #f5f3ff;
+            border: 1px solid #ddd6fe;
+            color: #5b21b6;
+            border-radius: 12px;
+            padding: 0.7rem 0.9rem;
+            font-size: 0.88rem;
+            font-weight: 600;
+            text-align: right;
+            line-height: 1.5;
+        }
+
+        .completion-box {
+            margin-top: 0.8rem;
+            padding: 0.8rem 1rem;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            line-height: 1.5;
+        }
+
+        .completion-box.wait { background: #fffbeb; border: 1px solid #fde68a; color: #92400e; }
+        .completion-box.done { background: #ecfdf5; border: 1px solid #a7f3d0; color: #047857; }
+        .completion-box.action {
+            background: #eef2ff;
+            border: 1px solid #c7d2fe;
+            color: #3730a3;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.6rem;
+        }
+
+        .star-picker { display: flex; align-items: center; gap: 0.2rem; }
+        .star-picker button {
+            background: none;
+            border: none;
+            font-size: 2.2rem;
+            line-height: 1;
+            color: #cbd5e1;
+            cursor: pointer;
+            padding: 0 0.1rem;
+            transition: transform 0.15s, color 0.15s;
+        }
+        .star-picker button:hover { transform: scale(1.15); }
+        .star-picker button.active { color: var(--star-color); }
+        .star-score-label { margin-right: 0.6rem; font-weight: 700; color: var(--text-muted); font-size: 0.95rem; }
+
+        .link-report {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-weight: 700;
+            font-size: 0.85rem;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+        .link-report:hover { color: #b45309; }
+
+        .btn-report { color: #b45309; border-color: #fcd34d; }
+        .btn-report:hover { background: #fffbeb; border-color: #f59e0b; }
+
+        /* Chat */
+        .modal.chat-modal {
+            padding: 0;
+            max-width: 480px;
+            height: min(640px, 86vh);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .chat-header {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            padding: 0.9rem 1.1rem;
+            background: #ffffff;
+            border-bottom: 1px solid var(--border-color);
+            flex-shrink: 0;
+        }
+
+        .chat-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), #818cf8);
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 1.15rem;
+            flex-shrink: 0;
+        }
+
+        .chat-header-info { flex: 1; min-width: 0; text-align: right; }
+        .chat-header-name {
+            font-weight: 800;
+            font-size: 1.05rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .chat-header-sub {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .chat-icon-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: none;
+            background: #f1f5f9;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 0.95rem;
+            flex-shrink: 0;
+            transition: background 0.2s;
+        }
+        .chat-icon-btn:hover { background: #e2e8f0; }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1rem 1.1rem;
+            background: #f8fafc;
+            display: flex;
+            flex-direction: column;
+            gap: 0.35rem;
+        }
+
+        .chat-day {
+            align-self: center;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            background: #e2e8f0;
+            padding: 0.2rem 0.75rem;
+            border-radius: 20px;
+            margin: 0.5rem 0 0.3rem 0;
+        }
+
+        .chat-msg {
+            max-width: 78%;
+            padding: 0.5rem 0.85rem 0.3rem 0.85rem;
+            border-radius: 16px;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            box-shadow: var(--shadow-sm);
+            overflow-wrap: anywhere;
+        }
+
+        .chat-msg.me {
+            align-self: flex-end;
+            background: var(--primary);
+            color: #ffffff;
+            border-bottom-left-radius: 4px;
+        }
+
+        .chat-msg.them {
+            align-self: flex-start;
+            background: #ffffff;
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+            border-bottom-right-radius: 4px;
+        }
+
+        .chat-msg-text { white-space: pre-wrap; display: block; }
+        .chat-msg-time { display: block; font-size: 0.68rem; opacity: 0.7; margin-top: 0.15rem; text-align: left; }
+
+        .chat-empty {
+            margin: auto;
+            text-align: center;
+            color: var(--text-muted);
+            font-weight: 600;
+            font-size: 0.95rem;
+            padding: 1rem;
+        }
+        .chat-empty-icon { font-size: 2.6rem; margin-bottom: 0.4rem; }
+
+        .chat-input-bar {
+            display: flex;
+            align-items: flex-end;
+            gap: 0.6rem;
+            padding: 0.8rem 1rem;
+            background: #ffffff;
+            border-top: 1px solid var(--border-color);
+            flex-shrink: 0;
+        }
+
+        .chat-input-bar textarea {
+            flex: 1;
+            resize: none;
+            border: 1px solid var(--border-color);
+            background: #f8fafc;
+            border-radius: 22px;
+            padding: 0.65rem 1rem;
+            font-size: 0.95rem;
+            line-height: 1.4;
+            max-height: 110px;
+            outline: none;
+            transition: all 0.2s;
+        }
+        .chat-input-bar textarea:focus {
+            border-color: var(--primary);
+            background: #ffffff;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
+        }
+
+        .chat-send-btn {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            border: none;
+            background: var(--primary);
+            color: #ffffff;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+            transition: all 0.2s;
+        }
+        .chat-send-btn:hover { background: var(--primary-hover); transform: scale(1.05); }
+        .chat-send-btn svg { transform: scaleX(-1); }
+
+        /* Admin */
+        .admin-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        .admin-stat {
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1.1rem;
+            text-align: center;
+            font-weight: 700;
+            color: var(--text-muted);
+            box-shadow: var(--shadow-sm);
+        }
+        .admin-stat .num { font-size: 2rem; font-weight: 800; color: var(--primary); }
+        .admin-card {
+            background: #f8fafc;
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 1rem 1.1rem;
+            margin-bottom: 0.9rem;
+            text-align: right;
+        }
+        .admin-card .row { color: var(--text-muted); font-size: 0.9rem; margin: 0.25rem 0; }
+        .admin-card .details {
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 0.7rem 0.9rem;
+            margin: 0.6rem 0;
+            white-space: pre-wrap;
+            font-size: 0.95rem;
+        }
+        .admin-actions { display: flex; gap: 0.6rem; flex-wrap: wrap; margin-top: 0.5rem; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="header-container">
+            <div class="logo" onclick="switchMainView('home')">
+                🐝 Work<span>Bee</span>
+            </div>
+            <nav>
+                <ul>
+                    <li><a id="nav-home" class="active" onclick="switchMainView('home')">דף הבית</a></li>
+                    <li><a id="nav-jobs" onclick="switchMainView('jobs')">עבודות זמינות</a></li>
+                    <li><a onclick="scrollToSection('how-it-works')">איך זה עובד?</a></li>
+                    <li><a id="nav-post-job" onclick="switchMainView('post-job')">פרסם מודעה</a></li>
+                </ul>
+            </nav>
+            <div class="header-actions">
+                <button class="btn btn-outline" onclick="switchMainView('post-job')">פרסם מודעה</button>
+                <button class="profile-icon-btn" id="notifBellBtn" onclick="handleBellClick()" title="התראות" style="position: relative;">
+                    🔔
+                    <span id="notifBadge" style="display:none; position:absolute; top:-2px; left:-2px; background:#ef4444; color:white; font-size:0.68rem; font-weight:800; border-radius:50%; width:18px; height:18px; align-items:center; justify-content:center;">0</span>
+                </button>
+                <button class="profile-icon-btn" onclick="handleProfileIconClick()" title="אזור אישי / התחברות">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- HOME VIEW -->
+    <div id="home-view" class="view active-view">
+        <section class="hero">
+            <h1>עבודות זמניות בסביבה. מהיום למחר.</h1>
+            <p>דוגווקינג, בייביסיטר, עזרות בבית, סידורים ועבודות מזדמנות - מוצאים עבודה, עובדים ומדרגים!</p>
+            <div class="hero-top-buttons">
+                <button class="btn btn-outline" style="background: white; border-radius: 14px; padding: 0.8rem 1.8rem; font-size: 1.05rem;" onclick="switchMainView('post-job')">
+                    ➕ פרסם מודעת עבודה
+                </button>
+                <button class="btn btn-green" style="border-radius: 14px; padding: 0.8rem 1.8rem; font-size: 1.05rem;" onclick="switchMainView('jobs')">
+                    🔍 מצא עבודה בלחיצה
+                </button>
+            </div>
+
+            <!-- Pill Search Bar matching image -->
+            <div class="pill-search-bar">
+                <div class="search-col">
+                    <label>סוג החיפוש</label>
+                    <select id="homeSearchType">
+                        <option value="jobs">👷 עבודות זמינות לעבודה</option>
+                        <option value="workers">👨‍💼 עובדים מחפשים עבודה</option>
+                    </select>
+                </div>
+                <div class="search-col">
+                    <label>תחום / קטגוריה</label>
+                    <select id="homeSearchCat">
+                        <option value="all">✨ כל התחומים</option>
+                        <option value="טיפול בחיות מחמד">🐶 טיפול בחיות מחמד</option>
+                        <option value="בייביסיטר וחינוך">👶 בייביסיטר וטיפול בילדים</option>
+                        <option value="משק בית וגינון">🏡 משק בית וגינון</option>
+                        <option value="שליחויות וסידורים">🛵 שליחויות וסידורים</option>
+                        <option value="אירועים ומסעדנות">🍷 אירועים ומסעדנות</option>
+                    </select>
+                </div>
+                <div class="search-col">
+                    <label>אזור בארץ</label>
+                    <select id="homeSearchRegion" onchange="onRegionChangeInHero()">
+                        <option value="all">🌐 כל האזורים</option>
+                        <option value="תל אביב והמרכז">תל אביב והמרכז</option>
+                        <option value="השרון">השרון והסביבה</option>
+                        <option value="ירושלים">ירושלים והסביבה</option>
+                        <option value="הצפון">אזור הצפון</option>
+                        <option value="הדרום">אזור הדרום</option>
+                    </select>
+                </div>
+                <button class="search-icon-btn" onclick="executePillSearch()" title="חפש עבודה">
+                    🔍
+                </button>
+            </div>
+        </section>
+
+        <section class="how-it-works-section" id="how-it-works">
+            <div class="how-it-works-container">
+                <h2 class="hw-title">איך זה עובד? 3 צעדים פשוטים</h2>
+                
+                <div class="steps-grid">
+                    <div class="step-card">
+                        <div class="step-number">1</div>
+                        <h3>מוצאים עבודה בסביבה</h3>
+                        <p>נכנסים לעמוד העבודות הזמינות, מסננים לפי תחום ואזור, ובוחרים מודעה מתאימה.</p>
+                    </div>
+
+                    <div class="step-card">
+                        <div class="step-number">2</div>
+                        <h3>מתחברים ומקבלים פרטים</h3>
+                        <p>מתחברים לאזור האישי, מצטרפים למנוי חודשי סמלי ויוצרים קשר ישיר מול המעסיק.</p>
+                    </div>
+
+                    <div class="step-card">
+                        <div class="step-number">3</div>
+                        <h3>מבצעים ומדרגים</h3>
+                        <p>משלימים את העבודה ומדרגים זה את זה במערכת לבניית מוניטין באזור האישי!</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- JOBS VIEW -->
+    <div id="jobs-view" class="view">
+        <div class="categories-nav">
+            <div class="chip active" id="chip-all" onclick="filterCategory('all', this)">✨ הכל</div>
+            <div class="chip" onclick="filterCategory('טיפול בחיות מחמד', this)">🐶 טיפול בחיות מחמד</div>
+            <div class="chip" onclick="filterCategory('בייביסיטר וחינוך', this)">👶 בייביסיטר וחינוך</div>
+            <div class="chip" onclick="filterCategory('משק בית וגינון', this)">🏡 משק בית וגינון</div>
+            <div class="chip" onclick="filterCategory('שליחויות וסידורים', this)">🛵 שליחויות וסידורים</div>
+            <div class="chip" onclick="filterCategory('אירועים ומסעדנות', this)">🍷 אירועים ומסעדנות</div>
+        </div>
+
+        <main class="main-container">
+            <!-- Extended Filter Bar -->
+            <div class="filter-panel">
+                <div class="filter-group">
+                    <label>אזור בארץ</label>
+                    <select id="jobFilterRegion" onchange="onRegionChangeInJobsFilter()">
+                        <option value="all">כל האזורים</option>
+                        <option value="תל אביב והמרכז">תל אביב והמרכז</option>
+                        <option value="השרון">השרון והסביבה</option>
+                        <option value="ירושלים">ירושלים והסביבה</option>
+                        <option value="הצפון">אזור הצפון</option>
+                        <option value="הדרום">אזור הדרום</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label>עיר / יישוב באזור (הקלד או בחר)</label>
+                    <input type="text" id="jobFilterCity" list="citiesList" placeholder="חפש יישוב..." oninput="renderContent()">
+                    <datalist id="citiesList"></datalist>
+                </div>
+
+                <div class="filter-group">
+                    <label>דרישת גיל מינימלי</label>
+                    <select id="jobFilterMinAge" onchange="renderContent()">
+                        <option value="all">כל הגילאים</option>
+                        <option value="14">מגיל 14 ומעלה</option>
+                        <option value="16">מגיל 16 ומעלה</option>
+                        <option value="18">מגיל 18 ומעלה</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label>תאריך העבודה</label>
+                    <select id="jobFilterDate" onchange="renderContent()">
+                        <!-- Dynamic options generated via JavaScript for 10 days -->
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label>מיון לפי</label>
+                    <select id="jobSortBy" onchange="renderContent()">
+                        <option value="default">ברירת מחדל (הכי חדש)</option>
+                        <option value="payHigh">שכר לשעה (מהגבוה לנמוך)</option>
+                        <option value="ratingHigh">דירוג מעסיק</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="section-header">
+                <h2 class="section-title" id="jobsSectionTitle">עבודות זמינות בסביבתך 💼</h2>
+            </div>
+
+            <div class="grid" id="mainGrid"></div>
+        </main>
+    </div>
+
+    <!-- PROFILE VIEW (אזור אישי) -->
+    <div id="profile-view" class="view">
+        <div class="page-container">
+            <div class="page-header">
+                <h1>אזור אישי 👤</h1>
+                <p>ניהול החשבון שלך, מודעות שפירסמת, עבודות שביצעת והדירוג שלך</p>
+            </div>
+
+            <div class="profile-header-card">
+                <div class="profile-avatar-lg">
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                </div>
+                <div class="profile-info">
+                    <h2 id="userProfName">משתמש חדש</h2>
+                    <p id="userProfDetails">📞 -- • ✉️ --</p>
+                    <div class="profile-stats">
+                        <div class="profile-stat-item">⭐ דירוג: <span id="userProfRating">0</span>/5.0</div>
+                        <div class="profile-stat-item">💼 עבודות שבוצעו: <span id="userProfCompleted">0</span></div>
+                        <div class="profile-stat-item">📝 מודעות שפורסמו: <span id="userProfPosted">0</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="profile-section-block" id="receivedRequestsSection">
+                <h3>🔔 בקשות שהתקבלו למודעות שלך</h3>
+                <div id="receivedRequestsContainer">
+                    <p class="empty-state-text">עדיין לא התקבלו בקשות עבודה.</p>
+                </div>
+            </div>
+
+            <div class="profile-section-block" id="sentRequestsSection">
+                <h3>📨 בקשות עבודה שהגשת</h3>
+                <div id="sentRequestsContainer">
+                    <p class="empty-state-text">עדיין לא שלחת בקשות עבודה.</p>
+                </div>
+            </div>
+
+            <div class="profile-section-block">
+                <h3>📌 מודעות עבודה שפירסמת</h3>
+                <div id="publishedJobsContainer">
+                    <p class="empty-state-text">עדיין לא פרסמת אף עבודה.</p>
+                </div>
+            </div>
+
+            <div class="profile-section-block">
+                <h3>✅ עבודות שביצעת עד עכשיו</h3>
+                <div id="completedJobsContainer">
+                    <p class="empty-state-text">0 עבודות שבוצעו עד כה.</p>
+                </div>
+            </div>
+
+            <div class="profile-section-block">
+                <h3>⭐ הדירוג והביקורות שלך</h3>
+                <div id="reviewsContainer">
+                    <p class="empty-state-text">אין עדיין ביקורות עבור משתמש זה.</p>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin-top: 1.5rem;">
+                <button class="btn btn-outline" onclick="handleLogout()" style="color: #ef4444; border-color: #fca5a5;">התנתק מהחשבון 🚪</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- POST JOB VIEW -->
+    <div id="post-job-view" class="view">
+        <div class="page-container">
+            <div class="page-header">
+                <h1>פרסום מודעת עבודה חדשה 📝</h1>
+                <p>מלא את פרטי המשימה בצורה ברורה והיא תתווסף מיד ללוח העבודות הזמינות!</p>
+            </div>
+
+            <div class="form-card-wizard">
+                <form id="fullPostJobForm" onsubmit="handleFullPostJob(event)">
+                    <div class="form-step-title"><span>1</span> בחר קטגוריה ראשית</div>
+                    <div class="category-select-grid">
+                        <div class="category-card-option selected" onclick="selectWizardCategory('טיפול בחיות מחמד', this)">
+                            <span class="icon">🐶</span> טיפול בחיות
+                        </div>
+                        <div class="category-card-option" onclick="selectWizardCategory('בייביסיטר וחינוך', this)">
+                            <span class="icon">👶</span> בייביסיטר
+                        </div>
+                        <div class="category-card-option" onclick="selectWizardCategory('משק בית וגינון', this)">
+                            <span class="icon">🏡</span> בית וגינון
+                        </div>
+                        <div class="category-card-option" onclick="selectWizardCategory('שליחויות וסידורים', this)">
+                            <span class="icon">🛵</span> שליחויות
+                        </div>
+                        <div class="category-card-option" onclick="selectWizardCategory('אירועים ומסעדנות', this)">
+                            <span class="icon">🍷</span> אירועים
+                        </div>
+                    </div>
+                    <input type="hidden" id="wizardCategoryInput" value="טיפול בחיות מחמד">
+
+                    <div class="form-step-title"><span>2</span> פרטי המשימה והמיקום</div>
+                    
+                    <div class="form-group-custom">
+                        <label>כותרת המודעה</label>
+                        <input type="text" id="wizTitle" placeholder="למשל: דרוש/ה דוגווקר לכלב מסוג גולדן / בייביסיטר לערב" required>
+                    </div>
+
+                    <div class="form-grid-2">
+                        <div class="form-group-custom">
+                            <label>אזור בארץ</label>
+                            <select id="wizLocation" required>
+                                <option value="תל אביב והמרכז">תל אביב והמרכז</option>
+                                <option value="השרון">השרון והסביבה</option>
+                                <option value="ירושלים">ירושלים והסביבה</option>
+                                <option value="הצפון">אזור הצפון</option>
+                                <option value="הדרום">אזור הדרום</option>
+                            </select>
+                        </div>
+                        <div class="form-group-custom">
+                            <label>עיר / יישוב</label>
+                            <input type="text" id="wizCity" placeholder="למשל: הרצליה / תל אביב" required>
+                        </div>
+                    </div>
+
+                    <div class="form-grid-2">
+                        <div class="form-group-custom">
+                            <label>גיל מינימלי נדרש</label>
+                            <select id="wizMinAge">
+                                <option value="14">14+</option>
+                                <option value="16" selected>16+</option>
+                                <option value="18">18+</option>
+                            </select>
+                        </div>
+                        <div class="form-group-custom">
+                            <label>מועד העבודה (10 הימים הקרובים)</label>
+                            <select id="wizTime" required>
+                                <!-- Dynamic options generated via JavaScript for 10 days -->
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group-custom">
+                        <label>תיאור מפורט של העבודה</label>
+                        <textarea id="wizDesc" placeholder="פרט מה בדיוק כוללת העבודה, שעות, דרישות מיוחדות..." required></textarea>
+                    </div>
+
+                    <div class="form-step-title"><span>3</span> שכר וזמנים</div>
+
+                    <div class="form-grid-2">
+                        <div class="form-group-custom">
+                            <label>שכר לשעה (₪)</label>
+                            <input type="number" id="wizPay" min="40" max="150" value="55" required>
+                        </div>
+                        <div class="form-group-custom">
+                            <label>מין מועדף לתפקיד</label>
+                            <select id="wizardGenderInput">
+                                <option value="לא משנה">לא משנה</option>
+                                <option value="זכר">זכר</option>
+                                <option value="נקבה">נקבה</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-grid-2">
+                        <div class="form-group-custom">
+                            <label>משעה</label>
+                            <select id="wizHoursFrom" required></select>
+                        </div>
+                        <div class="form-group-custom">
+                            <label>עד שעה</label>
+                            <select id="wizHoursTo" required></select>
+                        </div>
+                    </div>
+
+                    <div class="form-actions-bar">
+                        <button type="button" class="btn btn-outline" onclick="switchMainView('home')">ביטול וחזרה</button>
+                        <button type="submit" class="btn btn-primary" style="padding: 0.9rem 2.2rem;">פרסם מודעה 🚀</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- ADMIN VIEW (reports + blocking) - opened via #admin -->
+    <div id="admin-view" class="view">
+        <div class="page-container" style="max-width: 1000px;">
+            <div class="page-header">
+                <h1>🛡️ ניהול האתר</h1>
+                <p>דיווחים על משתמשים וחסימות</p>
+            </div>
+
+            <div class="admin-stats" id="adminStats"></div>
+
+            <div class="profile-section-block">
+                <h3>🚩 דיווחים על משתמשים</h3>
+                <div id="adminReportsContainer"></div>
+            </div>
+
+            <div class="profile-section-block">
+                <h3>👥 משתמשים רשומים</h3>
+                <div id="adminUsersContainer"></div>
+            </div>
+
+            <div class="profile-section-block">
+                <h3>⛔ משתמשים חסומים</h3>
+                <div id="adminBlockedContainer"></div>
+            </div>
+
+            <div style="text-align: center; margin-top: 1.5rem;">
+                <button class="btn btn-outline" onclick="handleAdminExit()">יציאה ממצב מנהל 🚪</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- TERMS VIEW -->
+    <div id="terms-view" class="view">
+        <div class="page-container">
+            <div class="page-header">
+                <h1>תנאי שימוש ומדיניות 📜</h1>
+                <p>מידע משפטי וכללי המערכת לשמירה על זכויות העובדים והמעסיקים</p>
+            </div>
+            <div class="form-card-wizard">
+                <p style="text-align: right; color: var(--text-muted); font-size: 0.92rem; margin-bottom: 1.8rem;">עדכון אחרון: 28.08.2026</p>
+
+                <div class="policy-section">
+                    <p>ברוכים הבאים לאתר beework (להלן: "האתר"), המופעל על ידי beework (להלן: "הנהלת האתר"). הגלישה והשימוש באתר כפופים לתנאים המפורטים להלן.</p>
+                </div>
+
+                <div class="policy-section">
+                    <h3>1. הסכמה לתנאים</h3>
+                    <p>השימוש באתר, כולל הרשמה, רכישת שירותים או עיון בתכנים, מהווה הסכמה מלאה מצידך לתנאי שימוש אלה. אם אינך מסכים לתנאי מהתנאים, עליך להפסיק את השימוש באתר.</p>
+                </div>
+
+                <div class="policy-section">
+                    <h3>2. השירותים והרכישות</h3>
+                    <ul>
+                        <li><strong>תוכן ושירות:</strong> הנהלת האתר שואפת לספק שירות רציף ומדויק, אך אינה מתחייבת שהשירות יפעל ללא הפסקות, תקלות טכניות או שגיאות.</li>
+                        <li><strong>תשלומים:</strong> התשלום עבור שירותים או מוצרים באתר יתבצע באמצעות אמצעי התשלום המורשים. המחירים כוללים מע"מ כחוק, אלא אם צוין אחרת.</li>
+                        <li><strong>ביטול עסקה:</strong> ביטול רכישות והחזרים כספיים יתבצעו בהתאם להוראות חוק הגנת הצרכן, התשמ"א-1981, ובהתאם למדיניות הביטולים המפורטת באתר.</li>
+                    </ul>
+                </div>
+
+                <div class="policy-section">
+                    <h3>3. קניין רוחני</h3>
+                    <p>כל זכויות היוצרים, סמני המסחר, העיצוב, הקוד, התמונות והטקסטים המופיעים באתר הם רכושה הבלעדי של הנהלת האתר (או צדדים שלישיים שנתנו הרשאה). אין להעתיק, להפיץ, לשכפל או לעשות שימוש מסחרי ברכוש זה ללא אישור מפורש בכתב.</p>
+                </div>
+
+                <div class="policy-section">
+                    <h3>4. הגבלת אחריות</h3>
+                    <ul>
+                        <li>השירות באתר מוצע כפי שהוא (AS IS).</li>
+                        <li>הנהלת האתר לא תישא באחריות לכל נזק ישיר, עקיף או תוצאתי שיגרם כתוצאה משימוש באתר, מאי-יכולת להשתמש בו, או מהסתמכות על מידע המופיע בו.</li>
+                    </ul>
+                </div>
+
+                <div class="policy-section">
+                    <h3>5. פרטיות ואבטחה</h3>
+                    <p>האתר אוסף ומעבד מידע אישי בהתאם למפורט במדיניות הפרטיות של האתר. פרטי התשלום מאובטחים באמצעות תקני אבטחה מקובלים ואינם נשמרים בשרתי האתר.</p>
+                </div>
+
+                <div class="policy-section">
+                    <h3>6. דין וסמכות שיפוט</h3>
+                    <p>על תנאי שימוש אלה יחולו אך ורק דיני מדינת ישראל. סמכות השיפוט הבלעדית בכל מחלוקת תהיה מסורה לבתי המשפט המוסמכים במחוז תל אביב.</p>
+                </div>
+
+                <div style="text-align: center; margin-top: 2rem;">
+                    <button class="btn btn-primary" onclick="switchMainView('home')">חזרה לדף הבית</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CONTACT VIEW -->
+    <div id="contact-view" class="view">
+        <div class="page-container">
+            <div class="page-header">
+                <h1>צור קשר ✉️</h1>
+                <p>יש לכם שאלה או הצעה? צוות WorkBee כאן בשבילכם</p>
+            </div>
+            <div class="contact-info-grid">
+                <div class="contact-card"><div class="icon">💬</div><h4>WhatsApp</h4><p>050-1234567</p></div>
+                <div class="contact-card"><div class="icon">✉️</div><h4>אימייל</h4><p>support@workbee.co.il</p></div>
+            </div>
+            <div class="form-card-wizard">
+                <form id="contactForm" onsubmit="handleContactSubmit(event)">
+                    <div class="form-group-custom"><label>שם מלא</label><input type="text" required></div>
+                    <div class="form-group-custom"><label>אימייל</label><input type="email" required></div>
+                    <div class="form-group-custom"><label>הודעה</label><textarea required></textarea></div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">שלח הודעה 📤</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL JOB DETAILS -->
+    <div class="modal-overlay" id="jobDetailModal">
+        <div class="modal">
+            <button class="modal-close" onclick="closeModal('jobDetailModal')">✕</button>
+            <div id="jobDetailContent"></div>
+        </div>
+    </div>
+
+    <!-- MODAL REGISTER / LOGIN -->
+    <div class="modal-overlay" id="authModal">
+        <div class="modal" style="max-width: 450px; text-align: center;">
+            <button class="modal-close" onclick="closeModal('authModal')">✕</button>
+
+            <!-- LOGIN PANEL -->
+            <div id="authLoginPanel">
+                <h2 style="margin-bottom: 0.4rem; font-size: 1.7rem; font-weight: 800;">התחברות לאזור האישי 👤</h2>
+                <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 1.4rem;">הזן את פרטיך כדי להתחבר ולצפות בעבודות</p>
+
+                <div style="display: flex; gap: 0.6rem; margin-bottom: 1.6rem;">
+                    <button type="button" class="btn btn-outline" style="flex: 1; justify-content: center;" onclick="switchAuthTab('register')">הרשמה</button>
+                    <button type="button" class="btn btn-primary" style="flex: 1; justify-content: center;">התחברות</button>
+                </div>
+
+                <form onsubmit="handleLoginSubmit(event)">
+                    <div class="form-group-custom">
+                        <label style="text-align: right;">כתובת אימייל</label>
+                        <input type="email" id="loginEmail" placeholder="name@example.com" required>
+                    </div>
+                    <div class="form-group-custom">
+                        <label style="text-align: right;">סיסמה</label>
+                        <input type="password" id="loginPass" placeholder="••••••••" required>
+                    </div>
+                    <label class="terms-consent">
+                        <input type="checkbox" id="loginTerms" required oninvalid="this.setCustomValidity('יש לאשר את תנאי השימוש כדי להתחבר')" onchange="this.setCustomValidity('')">
+                        <span>קראתי ואני מסכים/ה ל<a href="#" onclick="openTermsFromAuth(event)">תנאי השימוש והמדיניות</a></span>
+                    </label>
+                    <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center; padding: 0.9rem; margin-top: 0.5rem;">
+                        התחבר ועבור לאזור האישי ✨
+                    </button>
+                </form>
+            </div>
+
+            <!-- REGISTER PANEL -->
+            <div id="authRegisterPanel" style="display: none;">
+                <h2 style="margin-bottom: 0.4rem; font-size: 1.7rem; font-weight: 800;">הרשמה לאזור האישי 👤</h2>
+                <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 1.4rem;">הזן את פרטיך כדי להירשם ולצפות בעבודות</p>
+
+                <div style="display: flex; gap: 0.6rem; margin-bottom: 1.6rem;">
+                    <button type="button" class="btn btn-primary" style="flex: 1; justify-content: center;">הרשמה</button>
+                    <button type="button" class="btn btn-outline" style="flex: 1; justify-content: center;" onclick="switchAuthTab('login')">התחברות</button>
+                </div>
+
+                <form onsubmit="handleRegisterSubmit(event)">
+                    <div class="form-group-custom">
+                        <label style="text-align: right;">שם מלא</label>
+                        <input type="text" id="regName" placeholder="ישראל ישראלי" required>
+                    </div>
+                    <div class="form-group-custom">
+                        <label style="text-align: right;">מספר טלפון</label>
+                        <input type="tel" id="regPhone" placeholder="050-1234567" required>
+                    </div>
+                    <div class="bit-note" style="margin-bottom: 1.5rem;">
+                        💜 התשלומים באתר מתבצעים באמצעות אפליקציית ביט (Bit). האפליקציה צריכה להיות מותקנת אצלך בטלפון.
+                    </div>
+                    <div class="form-group-custom">
+                        <label style="text-align: right;">כתובת אימייל</label>
+                        <input type="email" id="regEmail" placeholder="name@example.com" required>
+                    </div>
+                    <div class="form-group-custom">
+                        <label style="text-align: right;">סיסמה</label>
+                        <input type="password" id="regPass" placeholder="••••••••" required>
+                    </div>
+                    <label class="terms-consent">
+                        <input type="checkbox" id="regTerms" required oninvalid="this.setCustomValidity('יש לאשר את תנאי השימוש כדי להירשם')" onchange="this.setCustomValidity('')">
+                        <span>קראתי ואני מסכים/ה ל<a href="#" onclick="openTermsFromAuth(event)">תנאי השימוש והמדיניות</a></span>
+                    </label>
+                    <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center; padding: 0.9rem; margin-top: 0.5rem;">
+                        הירשם ועבור לאזור האישי ✨
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL CHAT -->
+    <div class="modal-overlay" id="chatModal">
+        <div class="modal chat-modal">
+            <div class="chat-header">
+                <div class="chat-avatar" id="chatAvatar">?</div>
+                <div class="chat-header-info">
+                    <div class="chat-header-name" id="chatModalTitle">צ'אט</div>
+                    <div class="chat-header-sub" id="chatModalSubtitle"></div>
+                </div>
+                <button type="button" class="chat-icon-btn" title="דווח על משתמש" onclick="openReportForRequest(currentChatRequestId)">🚩</button>
+                <button type="button" class="chat-icon-btn" title="סגור" onclick="closeModal('chatModal')">✕</button>
+            </div>
+            <div class="chat-messages" id="chatMessagesContainer"></div>
+            <form class="chat-input-bar" onsubmit="handleSendChatMessage(event)">
+                <textarea id="chatMessageInput" rows="1" placeholder="כתוב הודעה..." onkeydown="handleChatKeydown(event)" oninput="autoGrowChatInput(this)"></textarea>
+                <button type="submit" class="chat-send-btn" title="שלח">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL WORK COMPLETED + REVIEW -->
+    <div class="modal-overlay" id="reviewModal">
+        <div class="modal" style="max-width: 460px; text-align: right;">
+            <button class="modal-close" onclick="closeModal('reviewModal')">✕</button>
+            <h2 style="font-size: 1.5rem; font-weight: 800; margin-bottom: 0.3rem;">✅ העבודה הושלמה</h2>
+            <p id="reviewModalSubtitle" style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 1.4rem;"></p>
+            <form onsubmit="handleSubmitReview(event)">
+                <div class="form-group-custom">
+                    <label>ציון</label>
+                    <div class="star-picker" id="reviewStarPicker">
+                        <button type="button" data-score="1" onclick="setReviewScore(1)" title="1">★</button>
+                        <button type="button" data-score="2" onclick="setReviewScore(2)" title="2">★</button>
+                        <button type="button" data-score="3" onclick="setReviewScore(3)" title="3">★</button>
+                        <button type="button" data-score="4" onclick="setReviewScore(4)" title="4">★</button>
+                        <button type="button" data-score="5" onclick="setReviewScore(5)" title="5">★</button>
+                        <span class="star-score-label" id="reviewScoreLabel"></span>
+                    </div>
+                </div>
+                <div class="form-group-custom">
+                    <label>ביקורת</label>
+                    <textarea id="reviewText" required placeholder="איך הייתה העבודה? כתוב/י ביקורת כנה ומכבדת..."></textarea>
+                </div>
+                <p id="reviewModalNote" style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 1.2rem;"></p>
+                <button type="submit" class="btn btn-green" style="width: 100%; justify-content: center; padding: 0.9rem;">אשר שהעבודה הושלמה ושלח דירוג</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL REPORT USER -->
+    <div class="modal-overlay" id="reportModal">
+        <div class="modal" style="max-width: 480px; text-align: right;">
+            <button class="modal-close" onclick="closeModal('reportModal')">✕</button>
+            <h2 style="font-size: 1.5rem; font-weight: 800; margin-bottom: 0.3rem;">🚩 דיווח על משתמש</h2>
+            <p id="reportModalTarget" style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 1.4rem;"></p>
+            <form onsubmit="handleSubmitReport(event)">
+                <div class="form-group-custom">
+                    <label>סיבת הדיווח</label>
+                    <select id="reportCategory" required>
+                        <option value="" disabled selected>בחר סיבה...</option>
+                        <option value="התנהגות לא הולמת">התנהגות לא הולמת</option>
+                        <option value="הטרדה או איומים">הטרדה או איומים</option>
+                        <option value="הונאה או ניסיון הונאה">הונאה או ניסיון הונאה</option>
+                        <option value="אי הגעה לעבודה">אי הגעה לעבודה</option>
+                        <option value="אי תשלום">אי תשלום</option>
+                        <option value="מודעה או פרופיל מזויפים">מודעה או פרופיל מזויפים</option>
+                        <option value="אחר">אחר</option>
+                    </select>
+                </div>
+                <div class="form-group-custom">
+                    <label>פרט/י מה קרה (חובה)</label>
+                    <textarea id="reportDetails" required minlength="10" placeholder="תאר/י בפירוט מה המשתמש עשה, מתי ואיפה. ככל שיהיו יותר פרטים נוכל לטפל מהר יותר."></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center; padding: 0.9rem;">שלח דיווח לצוות האתר</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL EDIT JOB (עריכת שכר ושעות) -->
+    <div class="modal-overlay" id="editJobModal">
+        <div class="modal" style="max-width: 420px; text-align: right;">
+            <button class="modal-close" onclick="closeModal('editJobModal')">✕</button>
+            <h2 style="font-size: 1.5rem; font-weight: 800; margin-bottom: 0.3rem;">✏️ עריכת מודעה</h2>
+            <p id="editJobModalSubtitle" style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 1.2rem;"></p>
+            <form onsubmit="handleEditJobSubmit(event)">
+                <div class="form-group-custom">
+                    <label style="text-align: right;">שכר לשעה (₪)</label>
+                    <input type="number" id="editJobPay" min="1" step="1" required>
+                </div>
+                <div style="display: flex; gap: 0.8rem;">
+                    <div class="form-group-custom" style="flex: 1;">
+                        <label style="text-align: right;">שעת התחלה</label>
+                        <select id="editJobHoursFrom" required></select>
+                    </div>
+                    <div class="form-group-custom" style="flex: 1;">
+                        <label style="text-align: right;">שעת סיום</label>
+                        <select id="editJobHoursTo" required></select>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center; padding: 0.9rem;">שמור שינויים ✅</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL ADMIN LOGIN -->
+    <div class="modal-overlay" id="adminLoginModal">
+        <div class="modal" style="max-width: 400px; text-align: center;">
+            <button class="modal-close" onclick="closeModal('adminLoginModal')">✕</button>
+            <h2 style="font-size: 1.5rem; font-weight: 800; margin-bottom: 1.2rem;">🔐 כניסת מנהל</h2>
+            <form onsubmit="handleAdminLogin(event)">
+                <div class="form-group-custom">
+                    <input type="password" id="adminPassInput" placeholder="סיסמת מנהל" required>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center; padding: 0.9rem;">כניסה</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-links">
+            <a onclick="switchMainView('home')">דף הבית</a>
+            <a onclick="switchMainView('jobs')">עבודות זמינות</a>
+            <a onclick="switchMainView('post-job')">פרסם מודעה</a>
+            <a onclick="switchMainView('terms')">תנאי שימוש ומדיניות</a>
+            <a onclick="switchMainView('contact')">צור קשר</a>
+        </div>
+        <p>© 2026 WorkBee - פלטפורמת העבודות הזמניות של ישראל. כל הזכויות שמורות.</p>
+    </footer>
+
+    <script>
+        // ===== הגדרות האתר =====
+        // ההגדרות הרגישות (סיסמת מנהל, כתובת לשליחת דיווחים, חשבון ה-Gmail לאימיילי אימות)
+        // עברו לצד השרת - משתני סביבה ב-Vercel (ראה קובץ ההוראות).
+        // פאנל הניהול: כתובת האתר + #admin
+        // אם רק צד אחד סיים ודירג, הביקורת תפורסם אוטומטית כשעברו הימים האלה מסיום העבודה
+        const REVIEW_FALLBACK_DAYS = 7;
+
+        // Data of Israel Regions & Cities
+        const regionCitiesData = {
+            'תל אביב והמרכז': ['תל אביב', 'רמת גן', 'גבעתיים', 'חולון', 'בת ים', 'ראשון לציון', 'פתח תקווה', 'בני ברק', 'יהוד', 'קריית אונו'],
+            'השרון': ['הרצליה', 'רעננה', 'כפר סבא', 'נתניה', 'הוד השרון', 'רמת השרון', 'אבן יהודה', 'קדימה-צורן'],
+            'ירושלים': ['ירושלים', 'מעלה אדומים', 'מבשרת ציון', 'בית שמש', 'אבו גוש', 'צור הדסה'],
+            'הצפון': ['חיפה', 'הקריות', 'עכו', 'נהריה', 'טבריה', 'עפולה', 'כרמיאל', 'נצרת', 'זיכרון יעקב'],
+            'הדרום': ['באר שבע', 'אשדוד', 'אשקלון', 'שדרות', 'נתיבות', 'קריית גת', 'אילת']
+        };
+
+        let selectedCategory = 'all';
+        let searchQuery = '';
+        let isLoggedIn = false;
+        let pendingJobIdAfterLogin = null;
+        let pendingActionAfterLogin = null;
+        let currentChatRequestId = null;
+
+        // Reports / admin / completion state (loaded from the shared server database)
+        let reports = [];
+        let blockedEmails = [];
+        let isAdmin = false;
+        let reviewRequestId = null;
+        let reviewScoreValue = 0;
+        let reportTarget = null;
+        let editingJobId = null;
+
+        // Shared database (server) state of registered users and job requests
+        let registeredUsers = [];
+        let jobRequests = [];
+
+        // User Data Initial State (Clean state for new users)
+        let currentUser = {
+            name: '',
+            phone: '',
+            email: '',
+            rating: 0,
+            completedJobsCount: 0,
+            postedJobsCount: 0
+        };
+
+        let userPostedJobs = [];
+        let userCompletedJobs = [];
+        let userReviews = [];
+
+        // =====================================================================
+        // Server API helpers
+        // =====================================================================
+        async function apiFetch(url, options) {
+            try {
+                const res = await fetch(url, Object.assign({
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'same-origin'
+                }, options || {}));
+                let data = {};
+                try { data = await res.json(); } catch (e) { data = {}; }
+                return { ok: res.ok, status: res.status, data: data };
+            } catch (err) {
+                return { ok: false, status: 0, data: { message: 'שגיאת תקשורת עם השרת. בדוק/י את החיבור לאינטרנט ונסה שוב.' } };
+            }
+        }
+
+        // Loads everything from the shared database: all jobs (visible to everyone),
+        // my requests, and the logged-in user (if the session is still valid)
+        async function loadState() {
+            const r = await apiFetch('/api/state');
+            if (!r.ok) return;
+            jobsData = r.data.jobs || [];
+            jobRequests = r.data.myRequests || [];
+            if (r.data.user) {
+                currentUser = Object.assign({ name: '', phone: '', email: '', rating: 0, completedJobsCount: 0, postedJobsCount: 0 }, r.data.user);
+                isLoggedIn = true;
+            }
+        }
+
+        // Auto-login when returning to the site (up to 7 days from the last visit)
+        async function restoreSession() {
+            await handleVerifyFromUrl();
+            const r = await apiFetch('/api/session');
+            if (r.ok && r.data && r.data.user) {
+                currentUser = Object.assign({ name: '', phone: '', email: '', rating: 0, completedJobsCount: 0, postedJobsCount: 0 }, r.data.user);
+                isLoggedIn = true;
+            }
+            await loadState();
+            updateNotificationBadge();
+        }
+
+        // Email verification link (?verify=...) sent to the user's email
+        async function handleVerifyFromUrl() {
+            const params = new URLSearchParams(location.search);
+            const token = params.get('verify');
+            if (!token) return;
+            history.replaceState(null, '', location.pathname);
+            const r = await apiFetch('/api/verify?token=' + encodeURIComponent(token));
+            if (r.ok) {
+                alert('האימייל אומת בהצלחה! 🎉 עכשיו אפשר להתחבר לאזור האישי.');
+                openAuthModal('login');
+            } else {
+                alert(r.data.message || 'קישור האימות אינו תקף או שפג תוקפו.');
+            }
+        }
+
+        // Helper to format date label for 10 upcoming days
+        function getFutureDateLabel(daysAhead) {
+            const daysOfWeek = ['יום ראשון', 'יום שני', 'יום שלישי', 'יום רביעי', 'יום חמישי', 'יום שישי', 'יום שבת'];
+            const today = new Date();
+            let d = new Date(today);
+            d.setDate(today.getDate() + daysAhead);
+            let dateStr = d.getDate().toString().padStart(2, '0') + '/' + (d.getMonth() + 1).toString().padStart(2, '0');
+            
+            if (daysAhead === 0) return `היום (${dateStr})`;
+            if (daysAhead === 1) return `מחר (${dateStr})`;
+            return `${daysOfWeek[d.getDay()]} (${dateStr})`;
+        }
+
+        // Generate 10 days select options dynamically
+        function populate10DaysSelects() {
+            const filterSelect = document.getElementById('jobFilterDate');
+            const wizSelect = document.getElementById('wizTime');
+            
+            let filterHtml = '<option value="all">כל התאריכים</option>';
+            let wizHtml = '';
+            
+            for (let i = 0; i < 10; i++) {
+                let label = getFutureDateLabel(i);
+                filterHtml += `<option value="${label}">${label}</option>`;
+                wizHtml += `<option value="${label}">${label}</option>`;
+            }
+            
+            if (filterSelect) filterSelect.innerHTML = filterHtml;
+            if (wizSelect) wizSelect.innerHTML = wizHtml;
+        }
+
+        // Main Available Jobs List (loaded from the shared server database)
+        const rawJobsData = [];
+
+        let jobsData = [];
+
+        function initJobsDataDates() {
+            jobsData = rawJobsData.map(job => {
+                let dateLabel = getFutureDateLabel(job.daysOffset);
+                return {
+                    ...job,
+                    badge: dateLabel,
+                    time: dateLabel
+                };
+            });
+        }
+
+        window.onload = function() {
+            populateCitiesDatalist('all');
+            populate10DaysSelects();
+            populateHourSelects();
+            initJobsDataDates();
+            restoreSession();
+            updateNotificationBadge();
+        };
+
+        // Generate hourly options (00:00 - 23:00) for the "from/to" work hours selects
+        function populateHourSelects() {
+            const fromSelect = document.getElementById('wizHoursFrom');
+            const toSelect = document.getElementById('wizHoursTo');
+            if (!fromSelect || !toSelect) return;
+
+            let html = '';
+            for (let h = 0; h < 24; h++) {
+                const label = h.toString().padStart(2, '0') + ':00';
+                html += `<option value="${label}">${label}</option>`;
+            }
+            fromSelect.innerHTML = html;
+            toSelect.innerHTML = html;
+            fromSelect.value = '16:00';
+            toSelect.value = '18:00';
+        }
+
+        function populateCitiesDatalist(region) {
+            const datalist = document.getElementById('citiesList');
+            if (!datalist) return;
+            datalist.innerHTML = '';
+            
+            let cities = [];
+            if (region === 'all' || !regionCitiesData[region]) {
+                Object.values(regionCitiesData).forEach(list => {
+                    cities = cities.concat(list);
+                });
+            } else {
+                cities = regionCitiesData[region];
+            }
+
+            cities.forEach(city => {
+                datalist.innerHTML += `<option value="${city}">`;
+            });
+        }
+
+        function onRegionChangeInHero() {
+            const reg = document.getElementById('homeSearchRegion').value;
+            populateCitiesDatalist(reg);
+        }
+
+        function onRegionChangeInJobsFilter() {
+            const reg = document.getElementById('jobFilterRegion').value;
+            populateCitiesDatalist(reg);
+            renderContent();
+        }
+
+        function executePillSearch() {
+            const cat = document.getElementById('homeSearchCat').value;
+            const region = document.getElementById('homeSearchRegion').value;
+
+            selectedCategory = cat;
+            switchMainView('jobs');
+
+            // Apply selected region in jobs view
+            const regSelect = document.getElementById('jobFilterRegion');
+            if (regSelect) regSelect.value = region;
+            
+            // Highlight active category chip
+            document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+            if (cat === 'all') {
+                document.getElementById('chip-all').classList.add('active');
+            }
+
+            renderContent();
+        }
+
+        function switchMainView(viewName) {
+            if (viewName === 'admin' && !isAdmin) { openModal('adminLoginModal'); return; }
+            if (viewName !== 'admin' && isLoggedIn && isBlocked(currentUser.email)) { forceLogoutBlockedUser(); return; }
+
+            document.querySelectorAll('.view').forEach(v => v.classList.remove('active-view'));
+            document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
+
+            const targetView = document.getElementById(viewName + '-view');
+            if (targetView) {
+                targetView.classList.add('active-view');
+                window.scrollTo(0, 0);
+            }
+
+            const navLink = document.getElementById('nav-' + viewName);
+            if (navLink) navLink.classList.add('active');
+
+            if (viewName === 'jobs') {
+                refreshJobRatings();
+                renderContent();
+            } else if (viewName === 'profile') {
+                renderProfileView();
+            } else if (viewName === 'admin') {
+                renderAdminView();
+            }
+
+            updateNotificationBadge();
+        }
+
+        function scrollToSection(id) {
+            switchMainView('home');
+            const el = document.getElementById(id);
+            if (el) el.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function renderContent() {
+            const grid = document.getElementById('mainGrid');
+            if (!grid) return;
+            grid.innerHTML = '';
+
+            const regionVal = document.getElementById('jobFilterRegion') ? document.getElementById('jobFilterRegion').value : 'all';
+            const cityVal = document.getElementById('jobFilterCity') ? document.getElementById('jobFilterCity').value.trim().toLowerCase() : '';
+            const minAgeVal = document.getElementById('jobFilterMinAge') ? document.getElementById('jobFilterMinAge').value : 'all';
+            const dateVal = document.getElementById('jobFilterDate') ? document.getElementById('jobFilterDate').value : 'all';
+            const sortVal = document.getElementById('jobSortBy') ? document.getElementById('jobSortBy').value : 'default';
+
+            let filteredJobs = jobsData.filter(job => {
+                const matchesCategory = selectedCategory === 'all' || job.category === selectedCategory;
+                const matchesRegion = regionVal === 'all' || job.location === regionVal;
+                const matchesCity = !cityVal || job.city.toLowerCase().includes(cityVal);
+                const matchesMinAge = minAgeVal === 'all' || job.minAge <= Number(minAgeVal);
+                const matchesDate = dateVal === 'all' || job.time === dateVal;
+
+                return matchesCategory && matchesRegion && matchesCity && matchesMinAge && matchesDate && !isBlocked(job.employerEmail);
+            });
+
+            // Sorting
+            if (sortVal === 'payHigh') {
+                filteredJobs.sort((a, b) => b.pay - a.pay);
+            } else if (sortVal === 'ratingHigh') {
+                filteredJobs.sort((a, b) => b.rating - a.rating);
+            }
+
+            document.getElementById('jobsSectionTitle').innerText = `עבודות זמינות בסביבתך (${filteredJobs.length}) 💼`;
+
+            if (filteredJobs.length === 0) {
+                grid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 3rem; color: var(--text-muted);">לא נמצאו עבודות התואמות את החיפוש והסינון שלך.</div>`;
+                return;
+            }
+
+            filteredJobs.forEach(job => {
+                grid.innerHTML += `
+                    <div class="card">
+                        <div>
+                            <div class="card-top">
+                                <span class="badge">${job.badge}</span>
+                                <div class="rating">
+                                    <span class="star">★</span>
+                                    <span>${job.rating}</span>
+                                    <span style="color: var(--text-muted); font-weight: normal;">(${job.reviewsCount})</span>
+                                </div>
+                            </div>
+                            <h3 class="job-title">${job.title}</h3>
+                            <div class="employer-info">👤 ${job.employer} • 📍 ${job.city} (${job.location})</div>
+                            <div class="meta-tags">
+                                <span class="meta-item">⏱️ ${job.hours}</span>
+                                <span class="meta-item">🏷️ ${job.category}</span>
+                                <span class="meta-item">👤 מגיל ${job.minAge}+</span>
+                            </div>
+                        </div>
+                        <div class="card-bottom">
+                            <div class="pay">${job.pay} ₪ <span>/ שעה</span></div>
+                            <button class="btn btn-primary" onclick="handleJobClick(${job.id})">צפה בפרטים</button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function handleJobClick(jobId) {
+            if (!isLoggedIn) {
+                pendingJobIdAfterLogin = jobId;
+                openAuthModal('login');
+            } else {
+                openJobDetail(jobId);
+            }
+        }
+
+        function handleProfileIconClick() {
+            if (isLoggedIn) {
+                switchMainView('profile');
+            } else {
+                pendingJobIdAfterLogin = null;
+                openAuthModal('login');
+            }
+        }
+
+        function handleBellClick() {
+            if (isLoggedIn) {
+                switchMainView('profile');
+                const section = document.getElementById('receivedRequestsSection');
+                if (section) section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            } else {
+                openAuthModal('login');
+            }
+        }
+
+        function updateNotificationBadge() {
+            const badge = document.getElementById('notifBadge');
+            if (!badge) return;
+            if (!isLoggedIn) {
+                badge.style.display = 'none';
+                return;
+            }
+            const count = jobRequests.filter(r => r.employerEmail === currentUser.email && r.status === 'pending' && !isBlocked(r.applicantEmail)).length;
+            if (count > 0) {
+                badge.style.display = 'flex';
+                badge.innerText = count;
+            } else {
+                badge.style.display = 'none';
+            }
+        }
+
+        function openAuthModal(mode) {
+            switchAuthTab(mode || 'login');
+            openModal('authModal');
+        }
+
+        function switchAuthTab(mode) {
+            const loginPanel = document.getElementById('authLoginPanel');
+            const registerPanel = document.getElementById('authRegisterPanel');
+            if (mode === 'register') {
+                loginPanel.style.display = 'none';
+                registerPanel.style.display = 'block';
+            } else {
+                loginPanel.style.display = 'block';
+                registerPanel.style.display = 'none';
+            }
+        }
+
+        // Shared logic after a successful login/registration
+        function completeLogin() {
+            closeModal('authModal');
+            updateNotificationBadge();
+
+            if (pendingActionAfterLogin === 'post-job') {
+                pendingActionAfterLogin = null;
+                switchMainView('post-job');
+            } else if (pendingJobIdAfterLogin) {
+                const jobId = pendingJobIdAfterLogin;
+                pendingJobIdAfterLogin = null;
+                openJobDetail(jobId);
+            } else {
+                switchMainView('profile');
+            }
+        }
+
+        async function handleLoginSubmit(e) {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value.trim();
+            const pass = document.getElementById('loginPass').value;
+
+            const r = await apiFetch('/api/login', { method: 'POST', body: JSON.stringify({ email: email, password: pass }) });
+            if (!r.ok) {
+                const code = r.data.code;
+                if (code === 'blocked') {
+                    alert('החשבון הזה נחסם על ידי הנהלת האתר.');
+                } else if (code === 'not_verified') {
+                    alert(r.data.message || 'עליך לאמת את כתובת האימייל לפני ההתחברות.');
+                } else {
+                    alert('לא נמצא משתמש עם פרטים אלו. אם עדיין אין לך חשבון, יש להירשם קודם.');
+                }
+                return;
+            }
+
+            currentUser = Object.assign({ name: '', phone: '', email: '', rating: 0, completedJobsCount: 0, postedJobsCount: 0 }, r.data.user);
+            isLoggedIn = true;
+            document.getElementById('loginEmail').value = '';
+            document.getElementById('loginPass').value = '';
+            document.getElementById('loginTerms').checked = false;
+            await loadState();
+            completeLogin();
+        }
+
+        async function handleRegisterSubmit(e) {
+            e.preventDefault();
+            const name = document.getElementById('regName').value || 'משתמש חדש';
+            const phone = document.getElementById('regPhone').value || 'לא צוין';
+            const email = document.getElementById('regEmail').value.trim();
+            const password = document.getElementById('regPass').value;
+
+            const r = await apiFetch('/api/register', { method: 'POST', body: JSON.stringify({ name: name, phone: phone, email: email, password: password }) });
+            if (!r.ok) {
+                alert(r.data.message || 'ההרשמה נכשלה, נסה שוב.');
+                return;
+            }
+
+            e.target.reset();
+            // ההרשמה לא מחברת אוטומטית: קודם צריך לאמת את כתובת האימייל דרך הקישור שנשלח
+            switchAuthTab('login');
+            alert(r.data.message || ('נרשמת בהצלחה! שלחנו קישור אימות לכתובת ' + email + '. יש ללחוץ על הקישור שבאימייל כדי לאמת את החשבון, ואז להתחבר.'));
+        }
+
+        async function handleLogout() {
+            try { await apiFetch('/api/logout', { method: 'POST' }); } catch (err) { }
+            isLoggedIn = false;
+            currentUser = { name: '', phone: '', email: '', rating: 0, completedJobsCount: 0, postedJobsCount: 0 };
+            userPostedJobs = [];
+            userCompletedJobs = [];
+            userReviews = [];
+            updateNotificationBadge();
+            alert('התנתקת מהחשבון.');
+            switchMainView('home');
+        }
+
+
+        function renderProfileView() {
+            syncProfileFromCompletedJobs();
+            document.getElementById('userProfName').innerText = currentUser.name;
+            document.getElementById('userProfDetails').innerText = `📞 ${currentUser.phone} • ✉️ ${currentUser.email}`;
+            document.getElementById('userProfRating').innerText = currentUser.rating > 0 ? currentUser.rating : 'אין עדיין';
+            document.getElementById('userProfCompleted').innerText = currentUser.completedJobsCount;
+            document.getElementById('userProfPosted').innerText = currentUser.postedJobsCount;
+
+            // המודעות שפירסמתי - מהמסד הנתונים המשותף
+            userPostedJobs = jobsData.filter(j => String(j.employerEmail || '') === String(currentUser.email || ''));
+
+            const pubContainer = document.getElementById('publishedJobsContainer');
+            if (userPostedJobs.length === 0) {
+                pubContainer.innerHTML = `<p class="empty-state-text">עדיין לא פרסמת אף עבודה.</p>`;
+            } else {
+                pubContainer.innerHTML = `<div class="grid">` + userPostedJobs.map(job => `
+                    <div style="background: #f8fafc; border: 1px solid var(--border-color); padding: 1rem; border-radius: 14px;">
+                        <div style="font-weight: 800; font-size: 1.05rem;">${job.title}</div>
+                        <div style="color: var(--text-muted); font-size: 0.88rem;">📍 ${job.city} • שכר: ${job.pay} ₪/שעה</div>
+                        <div style="color: var(--text-muted); font-size: 0.88rem;">⏱️ ${job.hours}</div>
+                        <span class="badge" style="margin-top: 0.5rem; display: inline-block;">סטטוס: פעילה</span>
+                        <div style="margin-top: 0.7rem;">
+                            ${canEditJob(job)
+                                ? `<button class="btn btn-outline" style="padding: 0.45rem 0.9rem; font-size: 0.85rem;" onclick="openEditJobFor(${job.id})">✏️ עריכת שכר ושעות</button>`
+                                : `<span style="color: var(--text-muted); font-size: 0.8rem;">🔒 העריכה ננעלה (אושרה בקשת עבודה)</span>`}
+                        </div>
+                    </div>
+                `).join('') + `</div>`;
+            }
+
+            const compContainer = document.getElementById('completedJobsContainer');
+            if (userCompletedJobs.length === 0) {
+                compContainer.innerHTML = `<p class="empty-state-text">0 עבודות שבוצעו עד כה.</p>`;
+            } else {
+                compContainer.innerHTML = `<div class="grid">` + userCompletedJobs.map(job => `
+                    <div style="background: #f8fafc; border: 1px solid var(--border-color); padding: 1rem; border-radius: 14px;">
+                        <div style="font-weight: 800;">${job.title}</div>
+                        <div style="color: var(--text-muted); font-size: 0.88rem;">מעסיק: ${job.employer}</div>
+                    </div>
+                `).join('') + `</div>`;
+            }
+
+            const revContainer = document.getElementById('reviewsContainer');
+            if (userReviews.length === 0) {
+                revContainer.innerHTML = `<p class="empty-state-text">אין עדיין ביקורות עבור משתמש זה.</p>`;
+            } else {
+                revContainer.innerHTML = userReviews.map(r => `
+                    <div style="background: #f8fafc; border: 1px solid var(--border-color); padding: 1rem; border-radius: 12px; margin-bottom: 0.8rem;">
+                        <div style="display: flex; justify-content: space-between; font-weight: 700;">
+                            <span>${r.author}</span>
+                            <span style="color: var(--star-color);">★ ${r.score}</span>
+                        </div>
+                        <p style="color: var(--text-muted); font-size: 0.92rem; margin-top: 0.3rem;">"${r.text}"</p>
+                    </div>
+                `).join('');
+            }
+
+            renderReceivedRequests();
+            renderSentRequests();
+        }
+
+        function renderReceivedRequests() {
+            const container = document.getElementById('receivedRequestsContainer');
+            if (!container) return;
+            const received = jobRequests.filter(r => r.employerEmail === currentUser.email && !isBlocked(r.applicantEmail));
+
+            if (received.length === 0) {
+                container.innerHTML = `<p class="empty-state-text">עדיין לא התקבלו בקשות עבודה.</p>`;
+                return;
+            }
+
+            container.innerHTML = received.map(r => {
+                let statusLabel = 'ממתינה לתשובה';
+                let actionsHtml = `
+                    <button class="btn btn-primary" onclick="respondToRequest(${r.id}, 'accepted')">אשר בקשה ✅</button>
+                    <button class="btn btn-outline" onclick="respondToRequest(${r.id}, 'declined')" style="color: #ef4444; border-color: #fca5a5;">דחה ✕</button>
+                `;
+                if (r.status === 'accepted') {
+                    statusLabel = isCompletedByBoth(r) ? 'הושלמה 🎉' : 'אושרה ✅';
+                    actionsHtml = `<button class="btn btn-primary" onclick="openChat(${r.id})">פתח צ'אט 💬</button>`;
+                } else if (r.status === 'declined') {
+                    statusLabel = 'נדחתה';
+                    actionsHtml = '';
+                }
+
+                return `
+                    <div style="background: #f8fafc; border: 1px solid var(--border-color); padding: 1rem; border-radius: 14px; margin-bottom: 0.9rem;">
+                        <div style="font-weight: 800; font-size: 1.05rem;">${r.jobTitle}</div>
+                        <div style="color: var(--text-muted); font-size: 0.88rem; margin: 0.3rem 0;">👤 ${r.applicantName} • 📞 ${r.applicantPhone}</div>
+                        <div class="bit-note" style="margin-bottom: 0.6rem;">💜 התשלום מתבצע באמצעות אפליקציית ביט (Bit). יש להתקין את האפליקציה.</div>
+                        <span class="badge" style="display: inline-block; margin-bottom: 0.7rem;">סטטוס: ${statusLabel}</span>
+                        <div style="display: flex; gap: 0.6rem; flex-wrap: wrap;">${actionsHtml}${buildReportButtonHtml(r)}</div>
+                        ${buildCompletionHtml(r)}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function renderSentRequests() {
+            const container = document.getElementById('sentRequestsContainer');
+            if (!container) return;
+            const sent = jobRequests.filter(r => r.applicantEmail === currentUser.email && !isBlocked(r.employerEmail));
+
+            if (sent.length === 0) {
+                container.innerHTML = `<p class="empty-state-text">עדיין לא שלחת בקשות עבודה.</p>`;
+                return;
+            }
+
+            container.innerHTML = sent.map(r => {
+                let statusLabel = 'ממתינה לתשובת המעסיק';
+                let actionsHtml = '';
+                if (r.status === 'accepted') {
+                    statusLabel = isCompletedByBoth(r) ? 'הושלמה 🎉' : 'אושרה ✅';
+                    actionsHtml = `<button class="btn btn-primary" onclick="openChat(${r.id})">פתח צ'אט 💬</button>`;
+                } else if (r.status === 'declined') {
+                    statusLabel = 'נדחתה';
+                }
+
+                return `
+                    <div style="background: #f8fafc; border: 1px solid var(--border-color); padding: 1rem; border-radius: 14px; margin-bottom: 0.9rem;">
+                        <div style="font-weight: 800; font-size: 1.05rem;">${r.jobTitle}</div>
+                        <div style="color: var(--text-muted); font-size: 0.88rem; margin: 0.3rem 0;">👤 מעסיק: ${r.employerName}</div>
+                        <span class="badge" style="display: inline-block; margin-bottom: 0.7rem;">סטטוס: ${statusLabel}</span>
+                        <div style="display: flex; gap: 0.6rem; flex-wrap: wrap;">${actionsHtml}${buildReportButtonHtml(r)}</div>
+                        ${buildCompletionHtml(r)}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        async function respondToRequest(reqId, decision) {
+            const r = await apiFetch('/api/requests', { method: 'POST', body: JSON.stringify({ action: 'respond', requestId: reqId, decision: decision }) });
+            if (!r.ok) {
+                alert(r.data.message || 'הפעולה נכשלה, נסה שוב.');
+                return;
+            }
+            const idx = jobRequests.findIndex(x => x.id === reqId);
+            if (idx > -1) jobRequests[idx] = r.data.request;
+            updateNotificationBadge();
+            renderProfileView();
+        }
+
+        function openChat(reqId) {
+            currentChatRequestId = reqId;
+            renderChatMessages();
+            openModal('chatModal');
+            setTimeout(() => {
+                const input = document.getElementById('chatMessageInput');
+                if (input) input.focus();
+            }, 60);
+        }
+
+        function getOtherParty(r) {
+            if (getMyRole(r) === 'employer') return { name: r.applicantName, email: r.applicantEmail };
+            return { name: r.employerName, email: r.employerEmail };
+        }
+
+        function formatChatDay(ts) {
+            const d = new Date(ts);
+            const today = new Date();
+            const yesterday = new Date();
+            yesterday.setDate(today.getDate() - 1);
+            if (d.toDateString() === today.toDateString()) return 'היום';
+            if (d.toDateString() === yesterday.toDateString()) return 'אתמול';
+            return d.toLocaleDateString('he-IL');
+        }
+
+        function renderChatMessages() {
+            const req = jobRequests.find(r => r.id === currentChatRequestId);
+            const container = document.getElementById('chatMessagesContainer');
+            if (!req || !container) return;
+
+            const other = getOtherParty(req);
+            const otherName = other.name || 'צ\'אט';
+            document.getElementById('chatModalTitle').innerText = otherName;
+            document.getElementById('chatModalSubtitle').innerText = '💼 ' + req.jobTitle;
+            document.getElementById('chatAvatar').innerText = otherName.trim().charAt(0) || '?';
+
+            if (req.chatMessages.length === 0) {
+                container.innerHTML = `
+                    <div class="chat-empty">
+                        <div class="chat-empty-icon">💬</div>
+                        <div>עדיין אין הודעות</div>
+                        <div style="font-weight: 400;">שלח/י הודעה ראשונה ל${escapeHtml(otherName)}</div>
+                    </div>`;
+            } else {
+                let html = '';
+                let lastDay = '';
+                req.chatMessages.forEach(m => {
+                    if (m.ts) {
+                        const label = formatChatDay(m.ts);
+                        if (label !== lastDay) {
+                            html += `<div class="chat-day">${label}</div>`;
+                            lastDay = label;
+                        }
+                    }
+                    const isMe = m.senderEmail ? m.senderEmail === currentUser.email : m.sender === currentUser.name;
+                    html += `<div class="chat-msg ${isMe ? 'me' : 'them'}"><span class="chat-msg-text">${escapeHtml(m.text)}</span><span class="chat-msg-time">${escapeHtml(m.time || '')}</span></div>`;
+                });
+                container.innerHTML = html;
+            }
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function autoGrowChatInput(el) {
+            el.style.height = 'auto';
+            el.style.height = Math.min(el.scrollHeight, 110) + 'px';
+        }
+
+        function handleChatKeydown(e) {
+            if (e.key === 'Enter' && !e.shiftKey && !e.isComposing) {
+                handleSendChatMessage(e);
+            }
+        }
+
+        async function handleSendChatMessage(e) {
+            e.preventDefault();
+            const input = document.getElementById('chatMessageInput');
+            const text = input.value.trim();
+            if (!text) return;
+
+            const req = jobRequests.find(r => r.id === currentChatRequestId);
+            if (!req) return;
+
+            const r = await apiFetch('/api/requests', { method: 'POST', body: JSON.stringify({ action: 'message', requestId: currentChatRequestId, text: text }) });
+            if (!r.ok) {
+                alert(r.data.message || 'שליחת ההודעה נכשלה, נסה שוב.');
+                return;
+            }
+            const idx = jobRequests.findIndex(x => x.id === currentChatRequestId);
+            if (idx > -1) jobRequests[idx] = r.data.request;
+            input.value = '';
+            autoGrowChatInput(input);
+            renderChatMessages();
+        }
+
+        function openJobDetail(jobId) {
+            const job = jobsData.find(j => j.id === jobId);
+            if (!job) return;
+
+            const content = document.getElementById('jobDetailContent');
+            content.innerHTML = `
+                <div style="text-align: right;">
+                    <span class="badge" style="margin-bottom: 0.8rem; display: inline-block;">${job.badge}</span>
+                    <h2 style="font-size: 1.8rem; margin-bottom: 0.4rem; line-height: 1.3;">${job.title}</h2>
+                    
+                    <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem; flex-wrap: wrap;">
+                        <div class="rating">
+                            <span class="star">★</span>
+                            <span>${job.rating}</span>
+                            <span style="color: var(--text-muted);">(${job.reviewsCount} ביקורות)</span>
+                        </div>
+                        <span style="color: var(--text-muted);">•</span>
+                        <span style="color: var(--text-muted);">📍 ${job.city} (${job.location})</span>
+                    </div>
+
+                    <div style="background: #f8fafc; padding: 1.2rem; border-radius: 16px; margin-bottom: 1.5rem; display: flex; justify-content: space-around; border: 1px solid var(--border-color);">
+                        <div style="text-align: center;">
+                            <div style="font-size: 0.85rem; color: var(--text-muted);">שכר לשעה</div>
+                            <div style="font-size: 1.4rem; font-weight: 800; color: var(--primary);">${job.pay} ₪</div>
+                        </div>
+                        <div style="text-align: center;">
+                            <div style="font-size: 0.85rem; color: var(--text-muted);">שעות העבודה</div>
+                            <div style="font-size: 1.1rem; font-weight: 700;">${job.hours}</div>
+                        </div>
+                        <div style="text-align: center;">
+                            <div style="font-size: 0.85rem; color: var(--text-muted);">גיל מינימלי</div>
+                            <div style="font-size: 1.1rem; font-weight: 700;">${job.minAge}+</div>
+                        </div>
+                    </div>
+
+                    <h4 style="margin-bottom: 0.5rem; font-size: 1.1rem; font-weight: 800;">תיאור העבודה:</h4>
+                    <p style="color: var(--text-muted); margin-bottom: 1.2rem; font-size: 0.98rem;">${job.desc}</p>
+
+                    <button class="btn btn-primary" style="width: 100%; justify-content: center; padding: 0.95rem; font-size: 1.1rem;" onclick="sendJobRequest(${job.id})">
+                        שליחת בקשת עבודה למעסיק 📩
+                    </button>
+                    <div style="text-align: center; margin-top: 0.9rem;">
+                        <button type="button" class="link-report" onclick="openReportForJob(${job.id})">🚩 דווח על המעסיק</button>
+                    </div>
+                </div>
+            `;
+            openModal('jobDetailModal');
+        }
+
+        async function sendJobRequest(jobId) {
+            const job = jobsData.find(j => j.id === jobId);
+            if (!job) return;
+
+            if (!isLoggedIn) {
+                pendingJobIdAfterLogin = jobId;
+                openAuthModal('login');
+                return;
+            }
+
+            const r = await apiFetch('/api/requests', { method: 'POST', body: JSON.stringify({ action: 'create', jobId: job.id }) });
+            if (!r.ok) {
+                alert(r.data.message || 'שליחת הבקשה נכשלה, נסה שוב.');
+                return;
+            }
+
+            jobRequests.push(r.data.request);
+            updateNotificationBadge();
+            alert('בקשתך נשלחה למעסיק בהצלחה! תוכל/י לעקוב אחרי הסטטוס באזור האישי שלך.');
+            closeModal('jobDetailModal');
+        }
+
+        function filterCategory(category, element) {
+            document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+            element.classList.add('active');
+            selectedCategory = category;
+            renderContent();
+        }
+
+        function selectWizardCategory(cat, el) {
+            document.querySelectorAll('.category-select-grid:not(.gender-select-grid) .category-card-option').forEach(c => c.classList.remove('selected'));
+            el.classList.add('selected');
+            document.getElementById('wizardCategoryInput').value = cat;
+        }
+
+        function selectWizardGender(gender, el) {
+            document.querySelectorAll('.gender-select-grid .category-card-option').forEach(c => c.classList.remove('selected'));
+            el.classList.add('selected');
+            document.getElementById('wizardGenderInput').value = gender;
+        }
+
+        async function handleFullPostJob(e) {
+            e.preventDefault();
+
+            if (!isLoggedIn) {
+                pendingActionAfterLogin = 'post-job';
+                alert('כדי לפרסם מודעת עבודה, יש להתחבר או להירשם קודם.');
+                openAuthModal('login');
+                return;
+            }
+
+            const title = document.getElementById('wizTitle').value;
+            const category = document.getElementById('wizardCategoryInput').value;
+            const location = document.getElementById('wizLocation').value;
+            const city = document.getElementById('wizCity').value;
+            const minAge = Number(document.getElementById('wizMinAge').value);
+            const desc = document.getElementById('wizDesc').value;
+            const pay = Number(document.getElementById('wizPay').value);
+            const time = document.getElementById('wizTime').value;
+            const hoursFrom = document.getElementById('wizHoursFrom').value;
+            const hoursTo = document.getElementById('wizHoursTo').value;
+            const hours = `${hoursFrom} - ${hoursTo}`;
+            const gender = document.getElementById('wizardGenderInput').value;
+
+            const r = await apiFetch('/api/jobs', {
+                method: 'POST',
+                body: JSON.stringify({ title: title, category: category, location: location, city: city, minAge: minAge, desc: desc, pay: pay, time: time, hoursFrom: hoursFrom, hoursTo: hoursTo, hours: hours, gender: gender })
+            });
+            if (!r.ok) {
+                alert(r.data.message || 'פרסום המודעה נכשל, נסה שוב.');
+                return;
+            }
+
+            const newJob = r.data.job;
+            jobsData.unshift(newJob);
+            userPostedJobs.unshift(newJob);
+            currentUser.postedJobsCount++;
+
+            alert('המודעה פורסמה בהצלחה ונוספה לרשימת העבודות הזמינות!');
+            document.getElementById('fullPostJobForm').reset();
+            populateHourSelects();
+            switchMainView('jobs');
+        }
+
+        function handleContactSubmit(e) {
+            e.preventDefault();
+            alert('הודעתך התקבלה בהצלחה!');
+            document.getElementById('contactForm').reset();
+            switchMainView('home');
+        }
+
+        // =====================================================================
+        // Helpers
+        // =====================================================================
+        function escapeHtml(str) {
+            return String(str == null ? '' : str).replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]));
+        }
+
+        function isBlocked(email) {
+            return !!email && blockedEmails.includes(String(email).toLowerCase());
+        }
+
+        function forceLogoutBlockedUser() {
+            isLoggedIn = false;
+            currentUser = { name: '', phone: '', email: '', rating: 0, completedJobsCount: 0, postedJobsCount: 0 };
+            userPostedJobs = [];
+            userCompletedJobs = [];
+            userReviews = [];
+            updateNotificationBadge();
+            alert('החשבון שלך נחסם על ידי הנהלת האתר.');
+            switchMainView('home');
+        }
+
+        function openTermsFromAuth(e) {
+            if (e) { e.preventDefault(); e.stopPropagation(); }
+            closeModal('authModal');
+            switchMainView('terms');
+        }
+
+
+        // =====================================================================
+        // Work completion + mutual rating
+        //   1. After the work time ends, each side clicks "העבודה הושלמה" and
+        //      must give a score (1-5) and a written review.
+        //   2. The job counts as completed only when BOTH sides confirmed.
+        //   3. Reviews are published together (so nobody is influenced by the
+        //      other side's review). If only one side confirmed, the review is
+        //      published automatically after REVIEW_FALLBACK_DAYS days.
+        // =====================================================================
+        function ensureCompletion(r) {
+            if (!r.completion) {
+                r.completion = { workerDone: false, employerDone: false, workerReview: null, employerReview: null };
+            }
+            return r.completion;
+        }
+
+        function getMyRole(r) {
+            if (!isLoggedIn) return null;
+            if (r.employerEmail && r.employerEmail === currentUser.email) return 'employer';
+            if (r.applicantEmail === currentUser.email) return 'worker';
+            return null;
+        }
+
+        function isCompletedByBoth(r) {
+            const c = ensureCompletion(r);
+            return c.workerDone && c.employerDone;
+        }
+
+        // End of the work = job date (from the job's date label) + "to" hour
+        function getJobEndDate(r) {
+            const job = jobsData.find(j => j.id === r.jobId);
+            if (!job) return null;
+            const dm = /\((\d{1,2})\/(\d{1,2})\)/.exec(job.time || '');
+            const hm = /(\d{1,2}):(\d{2})\s*-\s*(\d{1,2}):(\d{2})/.exec(job.hours || '');
+            if (!dm || !hm) return null;
+
+            const day = Number(dm[1]);
+            const month = Number(dm[2]) - 1;
+            const startH = Number(hm[1]);
+            const endH = Number(hm[3]);
+            const endM = Number(hm[4]);
+            const now = new Date();
+
+            let best = null;
+            [now.getFullYear() - 1, now.getFullYear(), now.getFullYear() + 1].forEach(y => {
+                const d = new Date(y, month, day, endH, endM, 0, 0);
+                if (endH <= startH) d.setDate(d.getDate() + 1); // shift that ends after midnight
+                if (!best || Math.abs(d - now) < Math.abs(best - now)) best = d;
+            });
+            return best;
+        }
+
+        function hasWorkEnded(r) {
+            const end = getJobEndDate(r);
+            return end ? Date.now() >= end.getTime() : true;
+        }
+
+        function formatEndLabel(d) {
+            return d.toLocaleDateString('he-IL', { day: '2-digit', month: '2-digit' }) + ' ' +
+                   d.toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' });
+        }
+
+        function areReviewsPublished(r) {
+            const c = ensureCompletion(r);
+            if (c.workerDone && c.employerDone) return true;
+            if (!c.workerDone && !c.employerDone) return false;
+            const end = getJobEndDate(r);
+            return !!end && Date.now() >= end.getTime() + REVIEW_FALLBACK_DAYS * 24 * 60 * 60 * 1000;
+        }
+
+        function buildCompletionHtml(r) {
+            if (r.status !== 'accepted') return '';
+            const role = getMyRole(r);
+            if (!role) return '';
+
+            const c = ensureCompletion(r);
+            const myDone = role === 'worker' ? c.workerDone : c.employerDone;
+            const otherDone = role === 'worker' ? c.employerDone : c.workerDone;
+            const otherName = escapeHtml(getOtherParty(r).name || 'הצד השני');
+
+            if (myDone && otherDone) {
+                return `<div class="completion-box done">🎉 העבודה הושלמה על ידי שני הצדדים. הדירוגים והביקורות פורסמו.</div>`;
+            }
+            if (myDone) {
+                return `<div class="completion-box wait">✔️ אישרת שהעבודה הושלמה ודירגת. ממתינים לאישור של ${otherName}. הביקורות יפורסמו כששני הצדדים יאשרו.</div>`;
+            }
+            if (!hasWorkEnded(r)) {
+                const end = getJobEndDate(r);
+                return `<div class="completion-box wait">⏳ בתום זמן העבודה${end ? ' (' + formatEndLabel(end) + ')' : ''} שני הצדדים ילחצו "העבודה הושלמה" ויתנו ציון וביקורת.</div>`;
+            }
+            return `<div class="completion-box action">
+                <div>${otherDone ? otherName + ' כבר אישר/ה שהעבודה הושלמה. ' : ''}זמן העבודה הסתיים. יש לאשר שהעבודה הושלמה ולדרג את ${otherName}.</div>
+                <button class="btn btn-green" onclick="openReviewModal(${r.id})">✅ העבודה הושלמה</button>
+            </div>`;
+        }
+
+        function openReviewModal(reqId) {
+            const r = jobRequests.find(x => x.id === reqId);
+            if (!r) return;
+            const role = getMyRole(r);
+            if (!role || r.status !== 'accepted') return;
+
+            if (!hasWorkEnded(r)) {
+                alert('ניתן ללחוץ "העבודה הושלמה" רק לאחר שזמן העבודה הסתיים.');
+                return;
+            }
+            const c = ensureCompletion(r);
+            if ((role === 'worker' && c.workerDone) || (role === 'employer' && c.employerDone)) return;
+
+            reviewRequestId = reqId;
+            const otherName = getOtherParty(r).name || 'הצד השני';
+            document.getElementById('reviewModalSubtitle').innerText = `דרג/י את ${otherName} וכתוב/י ביקורת על העבודה "${r.jobTitle}".`;
+            document.getElementById('reviewModalNote').innerText = `הציון והביקורת יפורסמו בפרופיל של ${otherName} לאחר ששני הצדדים יאשרו שהעבודה הושלמה.`;
+            document.getElementById('reviewText').value = '';
+            setReviewScore(0);
+            openModal('reviewModal');
+        }
+
+        function setReviewScore(n) {
+            reviewScoreValue = n;
+            document.querySelectorAll('#reviewStarPicker button').forEach(b => {
+                b.classList.toggle('active', Number(b.dataset.score) <= n);
+            });
+            document.getElementById('reviewScoreLabel').innerText = ['', 'גרוע', 'לא טוב', 'סביר', 'טוב', 'מצוין'][n] || '';
+        }
+
+        async function handleSubmitReview(e) {
+            e.preventDefault();
+            const r = jobRequests.find(x => x.id === reviewRequestId);
+            if (!r) return;
+            const role = getMyRole(r);
+            if (!role) return;
+
+            if (!hasWorkEnded(r)) {
+                alert('ניתן ללחוץ "העבודה הושלמה" רק לאחר שזמן העבודה הסתיים.');
+                return;
+            }
+            if (reviewScoreValue < 1) {
+                alert('יש לבחור ציון (1 עד 5 כוכבים).');
+                return;
+            }
+            const text = document.getElementById('reviewText').value.trim();
+            if (!text) {
+                alert('יש לכתוב ביקורת.');
+                return;
+            }
+
+            const res = await apiFetch('/api/requests', { method: 'POST', body: JSON.stringify({ action: 'review', requestId: reviewRequestId, score: reviewScoreValue, text: text }) });
+            if (!res.ok) {
+                alert(res.data.message || 'שמירת הדירוג נכשלה, נסה שוב.');
+                return;
+            }
+            const idx = jobRequests.findIndex(x => x.id === reviewRequestId);
+            if (idx > -1) jobRequests[idx] = res.data.request;
+
+            closeModal('reviewModal');
+            renderProfileView();
+
+            if (res.data.bothDone) {
+                alert('העבודה סומנה כהושלמה על ידי שני הצדדים. הדירוגים והביקורות פורסמו!');
+            } else {
+                alert('תודה! אישרת שהעבודה הושלמה. הביקורות יפורסמו כששני הצדדים יאשרו.');
+            }
+        }
+
+        // All published reviews written about a user (by email)
+        function getPublishedReviewsFor(email) {
+            const list = [];
+            if (!email) return list;
+            jobRequests.forEach(r => {
+                if (!areReviewsPublished(r)) return;
+                const c = ensureCompletion(r);
+                if (c.workerReview && r.employerEmail === email) list.push({ ...c.workerReview, jobTitle: r.jobTitle });
+                if (c.employerReview && r.applicantEmail === email) list.push({ ...c.employerReview, jobTitle: r.jobTitle });
+            });
+            return list;
+        }
+
+        function averageScore(list) {
+            if (!list.length) return 0;
+            return Math.round(list.reduce((sum, x) => sum + x.score, 0) / list.length * 10) / 10;
+        }
+
+        // דירוג המעסיק על כרטיסי המודעות מחושב כעת בצד השרת ומגיע עם רשימת העבודות
+        function refreshJobRatings() {
+            /* מחושב בשרת */
+        }
+
+        // Fills the personal-area data (rating, reviews, completed jobs) from the completion records
+        function syncProfileFromCompletedJobs() {
+            const mine = getPublishedReviewsFor(currentUser.email);
+            userReviews = mine.map(r => ({ author: escapeHtml(r.authorName), score: r.score, text: escapeHtml(r.text) }));
+            currentUser.rating = averageScore(mine);
+
+            const done = jobRequests.filter(r => r.applicantEmail === currentUser.email && isCompletedByBoth(r));
+            userCompletedJobs = done.map(r => ({ title: escapeHtml(r.jobTitle), employer: escapeHtml(r.employerName) }));
+            currentUser.completedJobsCount = done.length;
+        }
+
+        // =====================================================================
+        // Report a user
+        // =====================================================================
+        function buildReportButtonHtml(r) {
+            return `<button class="btn btn-outline btn-report" onclick="openReportForRequest(${r.id})">🚩 דווח על המשתמש</button>`;
+        }
+
+        function openReportForRequest(reqId) {
+            const r = jobRequests.find(x => x.id === reqId);
+            if (!r) return;
+            if (!getMyRole(r)) return;
+            const other = getOtherParty(r);
+            openReportModal(other.name, other.email, 'בקשה למודעה: ' + r.jobTitle);
+        }
+
+        function openReportForJob(jobId) {
+            const job = jobsData.find(j => j.id === jobId);
+            if (!job) return;
+            openReportModal(job.employer, job.employerEmail || '', 'מודעה: ' + job.title);
+        }
+
+        function openReportModal(name, email, context) {
+            if (!isLoggedIn) {
+                openAuthModal('login');
+                return;
+            }
+            if (email && email === currentUser.email) {
+                alert('לא ניתן לדווח על עצמך.');
+                return;
+            }
+            reportTarget = { name: name || 'משתמש', email: email || '', context: context || '' };
+            document.getElementById('reportModalTarget').innerHTML =
+                `דיווח על: <strong style="color: var(--text-main);">${escapeHtml(reportTarget.name)}</strong>` +
+                (reportTarget.context ? `<br>${escapeHtml(reportTarget.context)}` : '');
+            document.getElementById('reportCategory').selectedIndex = 0;
+            document.getElementById('reportDetails').value = '';
+            openModal('reportModal');
+        }
+
+        async function handleSubmitReport(e) {
+            e.preventDefault();
+            if (!reportTarget) return;
+
+            const category = document.getElementById('reportCategory').value;
+            const details = document.getElementById('reportDetails').value.trim();
+            if (!category) {
+                alert('יש לבחור סיבה לדיווח.');
+                return;
+            }
+            if (details.length < 10) {
+                alert('יש לפרט מה המשתמש עשה (לפחות כמה מילים).');
+                return;
+            }
+
+            const r = await apiFetch('/api/reports', {
+                method: 'POST',
+                body: JSON.stringify({
+                    category: category,
+                    details: details,
+                    reportedName: reportTarget.name,
+                    reportedEmail: reportTarget.email,
+                    context: reportTarget.context
+                })
+            });
+            if (!r.ok) {
+                alert(r.data.message || 'שליחת הדיווח נכשלה, נסה שוב.');
+                return;
+            }
+
+            closeModal('reportModal');
+            alert(r.data.message || 'הדיווח התקבל ויועבר להנהלת האתר. תודה!');
+        }
+
+        // =====================================================================
+        // Edit my job ad - salary & work hours only,
+        // locked forever once any work request for this job is approved
+        // =====================================================================
+        function hasAcceptedRequestForJob(jobId) {
+            return jobRequests.some(r => r.jobId === jobId && r.status === 'accepted');
+        }
+
+        function canEditJob(job) {
+            if (!isLoggedIn) return false;
+            if (String(job.employerEmail || '') !== String(currentUser.email || '')) return false;
+            return !hasAcceptedRequestForJob(job.id);
+        }
+
+        function openEditJobFor(jobId) {
+            const job = jobsData.find(j => j.id === jobId);
+            if (!job) return;
+            if (!canEditJob(job)) {
+                alert('לא ניתן לערוך את המודעה - כבר אושרה בקשת עבודה למודעה זו.');
+                return;
+            }
+            editingJobId = jobId;
+            document.getElementById('editJobModalSubtitle').innerText = 'עריכת שכר ושעות עבודה עבור: ' + job.title;
+            document.getElementById('editJobPay').value = job.pay;
+
+            const fromSelect = document.getElementById('editJobHoursFrom');
+            const toSelect = document.getElementById('editJobHoursTo');
+            let html = '';
+            for (let h = 0; h < 24; h++) {
+                const label = h.toString().padStart(2, '0') + ':00';
+                html += `<option value="${label}">${label}</option>`;
+            }
+            fromSelect.innerHTML = html;
+            toSelect.innerHTML = html;
+            const hm = /(\d{1,2}:\d{2})\s*-\s*(\d{1,2}:\d{2})/.exec(job.hours || '');
+            if (hm) {
+                fromSelect.value = hm[1];
+                toSelect.value = hm[2];
+            }
+            openModal('editJobModal');
+        }
+
+        async function handleEditJobSubmit(e) {
+            e.preventDefault();
+            if (!editingJobId) return;
+            const pay = Number(document.getElementById('editJobPay').value);
+            const hoursFrom = document.getElementById('editJobHoursFrom').value;
+            const hoursTo = document.getElementById('editJobHoursTo').value;
+            if (!pay || pay <= 0) {
+                alert('יש להזין שכר תקין.');
+                return;
+            }
+
+            const r = await apiFetch('/api/jobs', { method: 'PUT', body: JSON.stringify({ id: editingJobId, pay: pay, hoursFrom: hoursFrom, hoursTo: hoursTo }) });
+            if (!r.ok) {
+                alert(r.data.message || 'העריכה נכשלה, נסה שוב.');
+                return;
+            }
+            const updated = r.data.job;
+            const idx = jobsData.findIndex(j => j.id === editingJobId);
+            if (idx > -1) jobsData[idx] = updated;
+            editingJobId = null;
+            closeModal('editJobModal');
+            alert('המודעה עודכנה בהצלחה!');
+            renderProfileView();
+        }
+
+        // =====================================================================
+        // Admin panel (open with #admin at the end of the site address)
+        // =====================================================================
+        function openAdminFromHash() {
+            if (location.hash !== '#admin') return;
+            if (isAdmin) switchMainView('admin');
+            else openModal('adminLoginModal');
+        }
+        window.addEventListener('hashchange', openAdminFromHash);
+        window.addEventListener('load', openAdminFromHash);
+
+        async function handleAdminLogin(e) {
+            e.preventDefault();
+            const input = document.getElementById('adminPassInput');
+            const r = await apiFetch('/api/admin', { method: 'POST', body: JSON.stringify({ action: 'login', password: input.value }) });
+            if (!r.ok) {
+                alert(r.data.message || 'סיסמה שגויה.');
+                input.value = '';
+                return;
+            }
+            input.value = '';
+            isAdmin = true;
+            await loadAdminState();
+            closeModal('adminLoginModal');
+            switchMainView('admin');
+        }
+
+        async function loadAdminState() {
+            const r = await apiFetch('/api/admin', { method: 'POST', body: JSON.stringify({ action: 'state' }) });
+            if (r.ok && r.data) {
+                reports = r.data.reports || [];
+                registeredUsers = r.data.users || [];
+                blockedEmails = r.data.blocked || [];
+            }
+        }
+
+        async function handleAdminExit() {
+            try { await apiFetch('/api/admin', { method: 'POST', body: JSON.stringify({ action: 'logout' }) }); } catch (err) { }
+            isAdmin = false;
+            history.replaceState(null, '', location.pathname + location.search);
+            switchMainView('home');
+        }
+
+        async function adminToggleBlockForReport(reportId) {
+            const rep = reports.find(x => x.id === reportId);
+            if (!rep || !rep.reportedEmail) return;
+            const r = await apiFetch('/api/admin', { method: 'POST', body: JSON.stringify({ action: 'block', email: rep.reportedEmail, blocked: !isBlocked(rep.reportedEmail) }) });
+            if (!r.ok) {
+                alert(r.data.message || 'הפעולה נכשלה.');
+                return;
+            }
+            blockedEmails = r.data.blocked || [];
+            renderAdminView();
+        }
+
+        async function adminToggleBlockForUser(index) {
+            const u = registeredUsers[index];
+            if (!u) return;
+            const r = await apiFetch('/api/admin', { method: 'POST', body: JSON.stringify({ action: 'block', email: u.email, blocked: !isBlocked(u.email) }) });
+            if (!r.ok) {
+                alert(r.data.message || 'הפעולה נכשלה.');
+                return;
+            }
+            blockedEmails = r.data.blocked || [];
+            renderAdminView();
+        }
+
+        async function adminUnblockByIndex(index) {
+            const em = blockedEmails[index];
+            if (!em) return;
+            const r = await apiFetch('/api/admin', { method: 'POST', body: JSON.stringify({ action: 'block', email: em, blocked: false }) });
+            if (!r.ok) {
+                alert(r.data.message || 'הפעולה נכשלה.');
+                return;
+            }
+            blockedEmails = r.data.blocked || [];
+            renderAdminView();
+        }
+
+        async function adminToggleReportStatus(reportId) {
+            const r = await apiFetch('/api/admin', { method: 'POST', body: JSON.stringify({ action: 'report-status', id: reportId }) });
+            if (!r.ok) {
+                alert(r.data.message || 'הפעולה נכשלה.');
+                return;
+            }
+            const idx = reports.findIndex(x => x.id === reportId);
+            if (idx > -1 && r.data.report) reports[idx] = r.data.report;
+            renderAdminView();
+        }
+
+        // מחיקת משתמש לצמיתות - המשתמש, המודעות והבקשות שלו נמחקים ממסד הנתונים
+        async function adminDeleteUser(index) {
+            const u = registeredUsers[index];
+            if (!u) return;
+            if (!confirm('למחוק את המשתמש "' + u.name + '" (' + u.email + ')?\nכל המודעות והבקשות שלו יימחקו סופית מהאתר.')) return;
+            const r = await apiFetch('/api/admin', { method: 'POST', body: JSON.stringify({ action: 'delete', email: u.email }) });
+            if (!r.ok) {
+                alert(r.data.message || 'המחיקה נכשלה.');
+                return;
+            }
+            reports = r.data.reports || reports;
+            registeredUsers = r.data.users || [];
+            blockedEmails = r.data.blocked || blockedEmails;
+            await loadState();
+            renderAdminView();
+        }
+
+        function renderAdminView() {
+            const openCount = reports.filter(r => r.status === 'open').length;
+            document.getElementById('adminStats').innerHTML = `
+                <div class="admin-stat"><div class="num">${openCount}</div>דיווחים פתוחים</div>
+                <div class="admin-stat"><div class="num">${reports.length}</div>סה"כ דיווחים</div>
+                <div class="admin-stat"><div class="num">${registeredUsers.length}</div>משתמשים רשומים</div>
+                <div class="admin-stat"><div class="num">${blockedEmails.length}</div>משתמשים חסומים</div>`;
+
+            const repC = document.getElementById('adminReportsContainer');
+            if (reports.length === 0) {
+                repC.innerHTML = `<p class="empty-state-text">אין דיווחים.</p>`;
+            } else {
+                repC.innerHTML = reports.map(rep => {
+                    const blocked = isBlocked(rep.reportedEmail);
+                    const blockBtn = rep.reportedEmail
+                        ? `<button class="btn ${blocked ? 'btn-outline' : 'btn-primary'}" style="${blocked ? '' : 'background:#ef4444; box-shadow:none;'}" onclick="adminToggleBlockForReport(${rep.id})">${blocked ? '✅ בטל חסימה' : '⛔ חסום משתמש'}</button>`
+                        : `<span class="empty-state-text">אין אימייל למשתמש המדווח - לא ניתן לחסום</span>`;
+                    return `
+                        <div class="admin-card">
+                            <div style="display:flex; justify-content:space-between; gap:0.6rem; flex-wrap:wrap;">
+                                <strong>🚩 ${escapeHtml(rep.category)}</strong>
+                                <span class="badge">${rep.status === 'open' ? 'פתוח' : 'טופל'}</span>
+                            </div>
+                            <div class="row">🕒 ${new Date(rep.createdAt).toLocaleString('he-IL')}</div>
+                            <div class="row">👤 המדווח/ת: <strong>${escapeHtml(rep.reportedName)}</strong> (${escapeHtml(rep.reportedEmail || 'ללא אימייל')})${blocked ? ' — <strong style="color:#ef4444;">חסום</strong>' : ''}</div>
+                            <div class="row">✍️ מדווח/ת: ${escapeHtml(rep.reporterName)} (${escapeHtml(rep.reporterEmail)})</div>
+                            ${rep.context ? `<div class="row">📌 ${escapeHtml(rep.context)}</div>` : ''}
+                            <div class="details">${escapeHtml(rep.details)}</div>
+                            <div class="admin-actions">
+                                ${blockBtn}
+                                <button class="btn btn-outline" onclick="adminToggleReportStatus(${rep.id})">${rep.status === 'open' ? 'סמן כטופל' : 'פתח מחדש'}</button>
+                            </div>
+                        </div>`;
+                }).join('');
+            }
+
+            const usersC = document.getElementById('adminUsersContainer');
+            if (registeredUsers.length === 0) {
+                usersC.innerHTML = `<p class="empty-state-text">אין משתמשים רשומים.</p>`;
+            } else {
+                usersC.innerHTML = registeredUsers.map((u, i) => {
+                    const blocked = isBlocked(u.email);
+                    return `
+                        <div class="admin-card">
+                            <div style="display:flex; justify-content:space-between; gap:0.6rem; flex-wrap:wrap; align-items:center;">
+                                <div>
+                                    <strong>${escapeHtml(u.name)}</strong>${u.verified === false ? ' <span style="color:#f59e0b; font-weight:700;">(לא אומת)</span>' : ''}${blocked ? ' <span style="color:#ef4444; font-weight:700;">(חסום)</span>' : ''}
+                                    <div class="row">✉️ ${escapeHtml(u.email)} • 📞 ${escapeHtml(u.phone)}</div>
+                                </div>
+                                <div style="display:flex; gap:0.5rem; flex-wrap:wrap;">
+                                    <button class="btn ${blocked ? 'btn-outline' : 'btn-primary'}" style="${blocked ? '' : 'background:#ef4444; box-shadow:none;'}" onclick="adminToggleBlockForUser(${i})">${blocked ? '✅ בטל חסימה' : '⛔ חסום'}</button>
+                                    <button class="btn btn-outline" style="color:#ef4444; border-color:#fca5a5;" onclick="adminDeleteUser(${i})">🗑️ מחק משתמש</button>
+                                </div>
+                            </div>
+                        </div>`;
+                }).join('');
+            }
+
+            const blkC = document.getElementById('adminBlockedContainer');
+            if (blockedEmails.length === 0) {
+                blkC.innerHTML = `<p class="empty-state-text">אין משתמשים חסומים.</p>`;
+            } else {
+                blkC.innerHTML = blockedEmails.map((em, i) => `
+                    <div class="admin-card">
+                        <div style="display:flex; justify-content:space-between; gap:0.6rem; flex-wrap:wrap; align-items:center;">
+                            <strong>${escapeHtml(em)}</strong>
+                            <button class="btn btn-outline" onclick="adminUnblockByIndex(${i})">✅ בטל חסימה</button>
+                        </div>
+                    </div>`).join('');
+            }
+        }
+
+        // Refresh the personal area every 30s so the "העבודה הושלמה" button appears when the work time ends
+        setInterval(() => {
+            const pv = document.getElementById('profile-view');
+            const modalOpen = document.querySelector('.modal-overlay.active');
+            if (isLoggedIn && pv && pv.classList.contains('active-view') && !modalOpen) renderProfileView();
+        }, 30000);
+
+        function openModal(id) { document.getElementById(id).classList.add('active'); }
+        function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+    
+</script>
+</body>
+</html>

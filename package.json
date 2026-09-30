@@ -1,0 +1,13 @@
+{
+  "name": "beework",
+  "version": "1.0.0",
+  "private": true,
+  "description": "WorkBee - עבודות זמניות בסביבתך",
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "nodemailer": "^6.9.13",
+    "pg": "^8.11.5"
+  }
+}
