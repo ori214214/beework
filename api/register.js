@@ -6,6 +6,8 @@ module.exports = async (req, res) => {
   if (req.method !== 'POST') return lib.json(res, 405, { message: 'Method not allowed' });
 
   try {
+    console.log("--- DEBUG EMAIL USER ---:", process.env.GMAIL_USER);
+    console.log("--- DEBUG PASS LENGTH ---:", process.env.GMAIL_APP_PASSWORD ? process.env.GMAIL_APP_PASSWORD.length : 'MISSING');
     await lib.ensureSchema();
     const body = await lib.readBody(req);
     const name = String(body.name || '').trim() || 'משתמש חדש';
