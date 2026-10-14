@@ -157,13 +157,39 @@ function safeEqual(a, b) {
   return crypto.timingSafeEqual(ba, bb);
 }
 
-// ---------------------------------------------------------------------
-// Email (Gmail SMTP)
-// ---------------------------------------------------------------------
-function getMailer() {
-  if (!process.env.GMAIL_USER || !process.env.GMAIL_APP_PASSWORD) return null;
-  if (!transporter) {
-    transporter = nodemailer.createTransport({
+const { Resend } = require('resend');
+
+// אתחול Resend עם משתנה הסביבה
+const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
+
+/**
+ * פונקציה לשליחת מייל דרך Resend
+ */
+async function sendMail({ to, subject, html }) {
+  if (!resend) {
+    console.error('RESEND_API_KEY is missing in environment variables');
+    throw new Error('Email service is not configured');
+  }
+
+  const response = await resend.emails.send({
+    from: 'Onboarding <onboarding@resend.dev>', // כתובת שולח דיפולטיבית של Resend לבדיקות
+    to: Array.isArray(to) ? to : [to],
+    subject: subject,
+    html: html,
+  });
+
+  if (response.error) {
+    console.error('Resend error:', response.error);
+    throw new Error(response.error.message);
+  }
+
+  return response;
+}
+
+module.exports = {
+  sendMail,
+  // ...השאר כאן ייצואים נוספים אם היו בקובץ (כמו חיבור ל-Database)
+};
       host: 'smtp.gmail.com',
       port: 465,
       secure: true,
