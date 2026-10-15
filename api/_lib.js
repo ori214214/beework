@@ -183,24 +183,27 @@ async function sendMail({ to, subject, html }) {
     throw new Error(response.error.message);
   }
 
-  return response;
+return response;
 }
 
-module.exports = {
-  sendMail,
-  // ...השאר כאן ייצואים נוספים אם היו בקובץ (כמו חיבור ל-Database)
-};
-      host: 'smtp.gmail.com',
-      port: 465,
-      secure: true,
-      auth: {
-        user: process.env.GMAIL_USER,
-        pass: process.env.GMAIL_APP_PASSWORD
-      }
-    });
+// 1. הגדרת ה-transporter מחדש כראוי
+const transporter = nodemailer.createTransport({
+  host: 'smtp.gmail.com',
+  port: 465,
+  secure: true,
+  auth: {
+    user: process.env.GMAIL_USER,
+    pass: process.env.GMAIL_APP_PASSWORD
   }
-  return transporter;
+});
+
+return transporter;
 }
+
+// 2. הייצוא בסוף הקובץ בלבד
+module.exports = {
+  sendMail
+};
 
 function getSiteUrl() {
   return (process.env.SITE_URL || 'https://beework21.vercel.app').replace(/\/+$/, '');
